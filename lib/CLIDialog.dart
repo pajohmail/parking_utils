@@ -37,7 +37,9 @@ class ClIDialog {
   static void personMenu() {
     print('1. Add Person');
     print('2. List Person');
-    print('3. Back');
+    print('3. Edit Person');
+    print('4. Delete Person');
+    print('5. Back to root menu');
     print('Enter your choice: ');
     int choice = int.parse(stdin.readLineSync()!);
     switch (choice) {
@@ -51,6 +53,14 @@ class ClIDialog {
       // Back logic
         break;
       default:
+    case 4:
+    // Back logic
+    break;
+    default:
+    case 5:
+    // Back logic
+    break;
+    default:
         print('Invalid choice');
         break;
     }// switch
