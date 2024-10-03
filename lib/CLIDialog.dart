@@ -52,11 +52,9 @@ class ClIDialog {
       case 3:
       // Back logic
         break;
-      default:
     case 4:
     // Back logic
     break;
-    default:
     case 5:
     // Back logic
     break;

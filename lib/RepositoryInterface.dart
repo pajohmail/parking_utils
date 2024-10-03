@@ -1,8 +1,7 @@
-
- class RepositoryInterface {
- void add(ParkingItem);
-  ParkingItem getAll();
-  ParkingItem getById(id);
-  void update(item);
-  void delete(ParkingItem);
+abstract class RepositoryInterface<T> {
+ void add(T item);
+ List<T> getAll();
+ T getById(int id);
+ void update(T item);
+ void delete(T item);
 }
