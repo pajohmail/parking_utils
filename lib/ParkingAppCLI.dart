@@ -4,8 +4,9 @@ import 'package:parking_utils/CLIDialog.dart';
 
 void main() {
 
+  ClIDialog cd = ClIDialog();
   while (true) {
-    ClIDialog.welcomeMenu();
+    cd.welcomeMenu();
   }
 }
 
