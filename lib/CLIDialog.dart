@@ -278,7 +278,7 @@ class ClIDialog {
         cvvCode: creditCardCVV
     );
 
-    person.addCreditCard(creditCard);
+    person.addCreditCard(creditCard as pp.CreditCardDetails);
     print("Inserting person");
     _personRepository.add(person);
   }
@@ -315,7 +315,7 @@ class ClIDialog {
         expiryDate: creditCardExpiryDate,
         cvvCode: creditCardCVV
     );
-    person.addCreditCard(creditCard);
+    person.addCreditCard(creditCard as pp.CreditCardDetails);
 
     _personRepository.update(person);
   }
