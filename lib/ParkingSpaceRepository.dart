@@ -3,13 +3,12 @@ import 'AbstractRepository.dart';
 
 class ParkingSpaceRepository extends AbstractRepository<ParkingSpace> {
   List<ParkingSpace> _parkingSpaceList = [];
-  static int _ParkingSpaceID = 1;
+  static int _parkingSpaceID = 1;
 
   @override
   void add(ParkingSpace item) {
     if (item.getID() == 0) {
-      item.setID(_ParkingSpaceID);
-      _ParkingSpaceID++;
+      item.setID(_parkingSpaceID++);
     }
     _parkingSpaceList.add(item);
   }
@@ -21,7 +20,7 @@ class ParkingSpaceRepository extends AbstractRepository<ParkingSpace> {
 
   @override
   ParkingSpace getById(int id) {
-    return _parkingSpaceList.firstWhere((space) => space.getID() == id);
+    return _parkingSpaceList.firstWhere((space) => space.getID() == id, orElse: () => null as ParkingSpace);
   }
 
   @override

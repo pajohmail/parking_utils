@@ -1,20 +1,18 @@
-class ParkingTime {
-  int? _hours;
-  int? _minutes;
-  int? _seconds;
+import 'ParkingItem.dart';
+import 'AbstractRepository.dart';
 
-  ParkingTime(this._hours, this._minutes, this._seconds);
+class ParkingTime extends ParkingItem {
+  int id;
+  DateTime startTime;
+  DateTime endTime;
 
-  int? get hours => _hours;
-  int? get minutes => _minutes;
-  int? get seconds => _seconds;
+  ParkingTime({required this.id, required this.startTime, required this.endTime});
 
-  set hours(int? hours) => _hours = hours;
-  set minutes(int? minutes) => _minutes = minutes;
-  set seconds(int? seconds) => _seconds = seconds;
-
-  @override
-  String toString() {
-    return 'ParkingTime{hours: $_hours, minutes: $_minutes, seconds: $_seconds}';
-  }
+  int getID() => id;
+  void setID(int id) => this.id = id;
 }
+
+
+
+
+

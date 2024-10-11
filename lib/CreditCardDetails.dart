@@ -1,7 +1,7 @@
 class CreditCardDetails {
-  String _cardNumber="";
-  String _expiryDate="";
-  String _cvvCode="";
+  String _cardNumber = "";
+  String _expiryDate = "";
+  String _cvvCode = "";
 
   CreditCardDetails({
     required String cardNumber,
@@ -10,31 +10,24 @@ class CreditCardDetails {
   })  : _cardNumber = cardNumber,
         _expiryDate = expiryDate,
         _cvvCode = cvvCode;
+
+
+
+  // Getters
+  String get cardNumber => _cardNumber;
+  String get expiryDate => _expiryDate;
+  String get cvvCode => _cvvCode;
+
+  // Setters
+  set cardNumber(String cardNumber) {
+    _cardNumber = cardNumber;
+  }
+
+  set expiryDate(String expiryDate) {
+    _expiryDate = expiryDate;
+  }
+
+  set cvvCode(String cvvCode) {
+    _cvvCode = cvvCode;
+  }
 }
-
-//getters and setters
-String getCardNumber(CreditCardDetails creditCardDetails) {
-  return creditCardDetails._cardNumber;
-}
-
-String getExpiryDate(CreditCardDetails creditCardDetails) {
-  return creditCardDetails._expiryDate;
-}
-
-String getCvvCode(CreditCardDetails creditCardDetails) {
-  return creditCardDetails._cvvCode;
-}
-
-void setCardNumber(CreditCardDetails creditCardDetails, String cardNumber) {
-  creditCardDetails._cardNumber = cardNumber;
-}
-
-void setExpiryDate(CreditCardDetails creditCardDetails, String expiryDate) {
-  creditCardDetails._expiryDate = expiryDate;
-}
-
-
-void setCvvCode(CreditCardDetails creditCardDetails, String cvvCode) {
-  creditCardDetails._cvvCode = cvvCode;
-}
-
