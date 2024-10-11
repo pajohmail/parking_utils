@@ -7,144 +7,193 @@ import 'package:parking_utils/ParkingSpace.dart';
 import 'package:parking_utils/ParkingSpaceRepository.dart';
 import 'package:parking_utils/CreditCardDetails.dart' as cc;
 
+/// Class representing the Command Line Interface (CLI) dialog for managing parking-related entities.
 class ClIDialog {
   ParkingPersonRepository _personRepository = ParkingPersonRepository();
   ParkingVehicleRepository _vehicleRepository = ParkingVehicleRepository();
   ParkingSpaceRepository _parkingSpaceRepository = ParkingSpaceRepository();
 
+  /// Displays the welcome menu and handles user input to navigate to different sub-menus.
   void welcomeMenu() {
-    print('1. Edit Person');
-    print('2. Edit Vehicle');
-    print('3. Edit Parking lot');
-    print('4. Edit Parking session');
-    print('5. Exit');
-    print('Enter your choice: ');
-    String input = stdin.readLineSync()!;
-    int choice = _checkInputInt(input);
-    switch (choice) {
-      case 1:
-        personMenu();
-        break;
-      case 2:
-        vehicleMenu();
-        break;
-      case 3:
-        PakingSpaceMenu();
-        break;
-      case 4:
-      // Add Parking session logic
-        break;
-      case 5:
-        exit(0);
-        break;
-      default:
-        print('Invalid choice');
-        break;
+    while (true) {
+      print('1. Edit Person');
+      print('2. Edit Vehicle');
+      print('3. Edit Parking lot');
+      print('4. Edit Parking session');
+      print('5. Exit');
+      print('Enter your choice: ');
+      String input = stdin.readLineSync()!;
+      int choice = _checkInputInt(input);
+      switch (choice) {
+        case 1:
+          personMenu();
+          break;
+        case 2:
+          vehicleMenu();
+          break;
+        case 3:
+          parkingSpaceMenu();
+          break;
+        case 4:
+        // Add Parking session logic
+          break;
+        case 5:
+          exit(0);
+          break;
+        default:
+          print('Invalid choice');
+          break;
+      }
     }
   }
 
+  /// Displays the person management menu and handles user input to perform CRUD operations on persons.
   void personMenu() {
-    print('1. Add Person');
-    print('2. List Persons');
-    print('3. Edit Person');
-    print('4. Delete Person');
-    print('5. Back to root menu');
-    print('Enter your choice: ');
-    String input = stdin.readLineSync()!;
-    int choice = _checkInputInt(input);
-    switch (choice) {
-      case 1:
-        print("Adding new person");
-        _addPersson();
-        break;
-      case 2:
-        print('Listing all persons');
-        _listPersons();
-        break;
-      case 3:
-        _editPerson();
-        break;
-      case 4:
-        print('Deleting person');
-        _deletePerson();
-        break;
-      case 5:
-        welcomeMenu();
-        break;
-      default:
-        print('Invalid choice');
-        break;
+    while (true) {
+      print('1. Add Person');
+      print('2. List Persons');
+      print('3. Edit Person');
+      print('4. Delete Person');
+      print('5. Back to root menu');
+      print('Enter your choice: ');
+      String input = stdin.readLineSync()!;
+      int choice = _checkInputInt(input);
+      switch (choice) {
+        case 1:
+          print("Adding new person");
+          _addPerson();
+          break;
+        case 2:
+          print('Listing all persons');
+          _listPersons();
+          break;
+        case 3:
+          _editPerson();
+          break;
+        case 4:
+          print('Deleting person');
+          _deletePerson();
+          break;
+        case 5:
+          return;
+        default:
+          print('Invalid choice');
+          break;
+      }
     }
   }
 
+  void parkingSessionMenu() {
+    while (true) {
+      print('1. Add Parking Session');
+      print('2. List Parking Sessions');
+      print('3. Edit Parking Session');
+      print('4. Delete Parking Session');
+      print('5. Back to root menu');
+      print('Enter your choice: ');
+      String input = stdin.readLineSync()!;
+      int choice = _checkInputInt(input);
+      switch (choice) {
+        case 1:
+          print("Adding new parking session");
+          // Add Parking session logic
+          break;
+        case 2:
+          print('Listing all parking sessions');
+          // List Parking session logic
+          break;
+        case 3:
+          print('Editing parking session');
+          // Edit Parking session logic
+          break;
+        case 4:
+          print('Deleting parking session');
+          // Delete Parking session logic
+          break;
+        case 5:
+          return;
+        default:
+          print('Invalid choice');
+          break;
+      }
+    }
+  }
+
+  /// Displays the vehicle management menu and handles user input to perform CRUD operations on vehicles.
   void vehicleMenu() {
-    print('1. Add Vehicle');
-    print('2. List Vehicle');
-    print('3. Edit Vehicle');
-    print('4. Delete Vehicle');
-    print('5. Back');
-    print('Enter your choice: ');
-    String input = stdin.readLineSync()!;
-    int choice = _checkInputInt(input);
-    switch (choice) {
-      case 1:
-        print("Adding new vehicle");
-        _addVehicle();
-        break;
-      case 2:
-        print("Listing all vehicles");
-        _listVehicles();
-        break;
-      case 3:
-        print("Editing vehicle");
-        _editVehicle();
-        break;
-      case 4:
-        print("Deleting vehicle");
-        _deleteVehicle();
-        break;
-      case 5:
-        break;
-      default:
-        print('Invalid choice');
-        break;
+    while (true) {
+      print('1. Add Vehicle');
+      print('2. List Vehicle');
+      print('3. Edit Vehicle');
+      print('4. Delete Vehicle');
+      print('5. Back');
+      print('Enter your choice: ');
+      String input = stdin.readLineSync()!;
+      int choice = _checkInputInt(input);
+      switch (choice) {
+        case 1:
+          print("Adding new vehicle");
+          _addVehicle();
+          break;
+        case 2:
+          print("Listing all vehicles");
+          _listVehicles();
+          break;
+        case 3:
+          print("Editing vehicle");
+          _editVehicle();
+          break;
+        case 4:
+          print("Deleting vehicle");
+          _deleteVehicle();
+          break;
+        case 5:
+          return;
+        default:
+          print('Invalid choice');
+          break;
+      }
     }
   }
 
-  void PakingSpaceMenu() {
-    print('1. Add Parking Space');
-    print('2. List Parking Space');
-    print('3. Edit Parking Space');
-    print('4. Delete Parking Space');
-    print('5. Back');
-    print('Enter your choice: ');
-    String input = stdin.readLineSync()!;
-    int choice = _checkInputInt(input);
-    switch (choice) {
-      case 1:
-        print("Adding new parking space");
-        _addParkingSpace();
-        break;
-      case 2:
-        print("Listing all parking spaces");
-        _listParkingSpaces();
-        break;
-      case 3:
-        print("Editing parking space");
-        _editParkingSpace();
-        break;
-      case 4:
-        print("Deleting parking space");
-        _deleteParkingSpace();
-        break;
-      case 5:
-        break;
-      default:
-        print('Invalid choice');
-        break;
+  /// Displays the parking space management menu and handles user input to perform CRUD operations on parking spaces.
+  void parkingSpaceMenu() {
+    while (true) {
+      print('1. Add Parking Space');
+      print('2. List Parking Space');
+      print('3. Edit Parking Space');
+      print('4. Delete Parking Space');
+      print('5. Back');
+      print('Enter your choice: ');
+      String input = stdin.readLineSync()!;
+      int choice = _checkInputInt(input);
+      switch (choice) {
+        case 1:
+          print("Adding new parking space");
+          _addParkingSpace();
+          break;
+        case 2:
+          print("Listing all parking spaces");
+          _listParkingSpaces();
+          break;
+        case 3:
+          print("Editing parking space");
+          _editParkingSpace();
+          break;
+        case 4:
+          print("Deleting parking space");
+          _deleteParkingSpace();
+          break;
+        case 5:
+          return;
+        default:
+          print('Invalid choice');
+          break;
+      }
     }
   }
 
+  /// Deletes a parking space based on user input.
   void _deleteParkingSpace() {
     print('Enter the ID of the parking space you want to delete: ');
     int id = int.parse(stdin.readLineSync()!);
@@ -154,8 +203,10 @@ class ClIDialog {
       print('Parking Space not found');
       return;
     }
+    _parkingSpaceRepository.delete(ps);
   }
 
+  /// Edits a parking space based on user input.
   void _editParkingSpace() {
     print('Enter the ID of the parking space you want to edit: ');
     int id = int.parse(stdin.readLineSync()!);
@@ -164,8 +215,20 @@ class ClIDialog {
       print('Parking Space not found');
       return;
     }
+    print('Enter new location: ');
+    String location = stdin.readLineSync()!;
+    print('Enter new type: ');
+    String type = stdin.readLineSync()!;
+    print('Enter new status (t for occupied, f for not occupied): ');
+    bool isOccupied = stdin.readLineSync() == 't';
+
+    ps.setLocation(location);
+    ps.setType(type);
+
+    _parkingSpaceRepository.update(ps);
   }
 
+  /// Adds a new parking space based on user input.
   void _addParkingSpace() {
     print('Adding new parking space');
     print("Enter parking space location: ");
@@ -179,6 +242,7 @@ class ClIDialog {
     _parkingSpaceRepository.add(ps);
   }
 
+  /// Lists all parking spaces.
   void _listParkingSpaces() {
     List<ParkingSpace> parkingSpaces = _parkingSpaceRepository.getAll();
     for (ParkingSpace parkingSpace in parkingSpaces) {
@@ -189,6 +253,7 @@ class ClIDialog {
     }
   }
 
+  /// Deletes a vehicle based on user input.
   void _deleteVehicle() {
     print('Enter the ID of the vehicle you want to delete: ');
     int id = int.parse(stdin.readLineSync()!);
@@ -200,6 +265,7 @@ class ClIDialog {
     _vehicleRepository.delete(pv);
   }
 
+  /// Edits a vehicle based on user input.
   void _editVehicle() {
     print('Enter the ID of the vehicle you want to edit: ');
     int id = int.parse(stdin.readLineSync()!);
@@ -219,6 +285,7 @@ class ClIDialog {
     _vehicleRepository.update(pv);
   }
 
+  /// Adds a new vehicle based on user input.
   void _addVehicle() {
     print('Adding new vehicle');
     print("Enter number plate: ");
@@ -230,6 +297,7 @@ class ClIDialog {
     _vehicleRepository.add(pv);
   }
 
+  /// Lists all vehicles.
   void _listVehicles() {
     List<ParkingVehicle> vehicles = _vehicleRepository.getAll();
     for (ParkingVehicle vehicle in vehicles) {
@@ -239,6 +307,7 @@ class ClIDialog {
     }
   }
 
+  /// Lists all persons.
   void _listPersons() {
     List<pp.ParkingPerson> persons = _personRepository.getAll();
     for (pp.ParkingPerson person in persons) {
@@ -250,7 +319,8 @@ class ClIDialog {
     }
   }
 
-  void _addPersson() {
+  /// Adds a new person based on user input.
+  void _addPerson() {
     print('Enter First name: ');
     String firstName = stdin.readLineSync()!;
     print("Enter Last name: ");
@@ -259,30 +329,16 @@ class ClIDialog {
     String phone = stdin.readLineSync()!;
     print("Enter Email: ");
     String email = stdin.readLineSync()!;
-    print("Enter credit card number: ");
-    String creditCardNumber = stdin.readLineSync()!;
-    print("Enter credit card expiry date: ");
-    String creditCardExpiryDate = stdin.readLineSync()!;
-    print("Enter credit card CVV: ");
-    String creditCardCVV = stdin.readLineSync()!;
+
 
     pp.ParkingPerson person = pp.ParkingPerson(
-        FirstName: firstName,
-        LastName: lastName,
-        email: email,
-        phone: phone
-    );
-    cc.CreditCardDetails creditCard = cc.CreditCardDetails(
-        cardNumber: creditCardNumber,
-        expiryDate: creditCardExpiryDate,
-        cvvCode: creditCardCVV
-    );
+        FirstName: firstName, LastName: lastName, email: email, phone: phone);
 
-    person.addCreditCard(creditCard as pp.CreditCardDetails);
     print("Inserting person");
     _personRepository.add(person);
   }
 
+  /// Edits a person based on user input.
   void _editPerson() {
     print('Enter the ID of the person you want to edit: ');
     int id = int.parse(stdin.readLineSync()!);
@@ -299,27 +355,19 @@ class ClIDialog {
     String phone = stdin.readLineSync()!;
     print("Enter Email: ");
     String email = stdin.readLineSync()!;
-    print("Enter credit card number: ");
-    String creditCardNumber = stdin.readLineSync()!;
-    print("Enter credit card expiry date: ");
-    String creditCardExpiryDate = stdin.readLineSync()!;
-    print("Enter credit card CVV: ");
-    String creditCardCVV = stdin.readLineSync()!;
+
 
     person.setFirstName(firstName);
     person.setLastName(lastName);
     person.setEmail(email);
     person.setPhone(phone);
-    var creditCard = cc.CreditCardDetails(
-        cardNumber: creditCardNumber,
-        expiryDate: creditCardExpiryDate,
-        cvvCode: creditCardCVV
-    );
-    person.addCreditCard(creditCard as pp.CreditCardDetails);
+
+
 
     _personRepository.update(person);
   }
 
+  /// Deletes a person based on user input.
   void _deletePerson() {
     print('Enter the ID of the person you want to delete: ');
     int inputInt = int.parse(stdin.readLineSync()!);
@@ -331,6 +379,10 @@ class ClIDialog {
     _personRepository.delete(person);
   }
 
+  /// Validates and converts user input to an integer.
+  ///
+  /// \param input The user input as a string.
+  /// \return The validated integer input.
   int _checkInputInt(String input) {
     while (true) {
       try {

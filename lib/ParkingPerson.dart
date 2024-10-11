@@ -1,4 +1,5 @@
 import 'package:parking_utils/ParkingItem.dart';
+import 'package:parking_utils/ParkingVehicle.dart';
 
 class CreditCardDetails {
   // Define the properties and methods for CreditCardDetails
@@ -9,8 +10,8 @@ class ParkingPerson extends ParkingItem {
   String _lastName = '';
   String _email = '';
   String _phone = '';
-  List<String> _ownedVehicleList = [];
-  List<CreditCardDetails> _creditCardList = [];
+  List<ParkingVehicle> _ownedVehicleList = [];
+
 
   ParkingPerson({
     required String FirstName,
@@ -22,13 +23,7 @@ class ParkingPerson extends ParkingItem {
         _email = email,
         _phone = phone;
 
-  void addCreditCard(CreditCardDetails creditCard) {
-    _creditCardList.add(creditCard);
-  }
 
-  void removeCreditCard(CreditCardDetails creditCard) {
-    _creditCardList.remove(creditCard);
-  }
 
   void setFirstName(String FirstName) {
     this._firstName = FirstName;
