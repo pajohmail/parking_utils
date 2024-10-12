@@ -1,18 +1,22 @@
 import 'dart:io';
 import 'package:parking_utils/ParkingPerson.dart' as pp;
 import 'package:parking_utils/ParkingPersonRepository.dart';
+import 'package:parking_utils/ParkingTimeRepository.dart';
 import 'package:parking_utils/ParkingVehicleRepository.dart';
 import 'package:parking_utils/ParkingVehicle.dart';
 import 'package:parking_utils/ParkingSpace.dart';
 import 'package:parking_utils/ParkingSpaceRepository.dart';
-import 'package:parking_utils/CreditCardDetails.dart' as cc;
+import 'package:parking_utils/ParkingTime.dart';
+import 'package:parking_utils/ParkingTimeRepository.dart';
+import 'package:parking_utils/PaymentHandler.dart';
 
-/// Class representing the Command Line Interface (CLI) dialog for managing parking-related entities.
+/// A class that handles the command line interface for the parking system.
 class ClIDialog {
   ParkingPersonRepository _personRepository = ParkingPersonRepository();
   ParkingVehicleRepository _vehicleRepository = ParkingVehicleRepository();
   ParkingSpaceRepository _parkingSpaceRepository = ParkingSpaceRepository();
-
+  ParkingTimeRepository _parkingTimeRepository = ParkingTimeRepository();
+  PaymentHandler _paymentHandler = PaymentHandler();
   /// Displays the welcome menu and handles user input to navigate to different sub-menus.
   void welcomeMenu() {
     while (true) {
@@ -96,7 +100,7 @@ class ClIDialog {
       switch (choice) {
         case 1:
           print("Adding new parking session");
-          // Add Parking session logic
+          _addParkingSession();
           break;
         case 2:
           print('Listing all parking sessions');
@@ -117,6 +121,25 @@ class ClIDialog {
           break;
       }
     }
+  }
+  ///
+  void _createPayment(ParkingTime item) {
+
+     _paymentHandler.createPayment(item);
+
+
+  }
+
+  void _addParkingSession() {
+    print('Adding new parking session');
+    print("Enter parking session end time: ");
+    String endTime = stdin.readLineSync()!;
+    print("Enter parking session vehicle ID: ");
+    String vehicleID = stdin.readLineSync()!;
+    print("Enter parking session person ID: ");
+    String personID = stdin.readLineSync()!;
+    ParkingTime pt = ParkingTime(endTime: DateTime.parse(endTime), vehicleID: int.parse(vehicleID), personID: int.parse(personID));
+
   }
 
   /// Displays the vehicle management menu and handles user input to perform CRUD operations on vehicles.

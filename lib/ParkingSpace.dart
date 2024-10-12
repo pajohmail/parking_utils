@@ -4,6 +4,7 @@ class ParkingSpace extends ParkingItem {
   bool _isOccupied = false;
   String _location = '';
   String _type = '';
+  double _minuteRate = 0.0;
 
   ParkingSpace({
     required bool isOccupied,
@@ -25,6 +26,15 @@ class ParkingSpace extends ParkingItem {
   getType() {
     return this._type;
   }
+
+  getMinuteRate() {
+    return this._minuteRate;
+  }
+
+  setMinuteRate(double rate) {
+    this._minuteRate = rate;
+  }
+
 
   setType(String type) {
     this._type = type;
