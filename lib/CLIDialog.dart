@@ -9,14 +9,12 @@ import 'package:parking_utils/ParkingSpaceRepository.dart';
 import 'package:parking_utils/ParkingTime.dart';
 import 'package:parking_utils/ParkingTimeRepository.dart';
 import 'package:parking_utils/PaymentHandler.dart';
+import 'package:parking_utils/WatchTower.dart';
+
 
 /// A class that handles the command line interface for the parking system.
 class ClIDialog {
-  ParkingPersonRepository _personRepository = ParkingPersonRepository();
-  ParkingVehicleRepository _vehicleRepository = ParkingVehicleRepository();
-  ParkingSpaceRepository _parkingSpaceRepository = ParkingSpaceRepository();
-  ParkingTimeRepository _parkingTimeRepository = ParkingTimeRepository();
-  PaymentHandler _paymentHandler = PaymentHandler();
+    WatchTower _watchTower = WatchTower();
   /// Displays the welcome menu and handles user input to navigate to different sub-menus.
   void welcomeMenu() {
     while (true) {
@@ -125,7 +123,7 @@ class ClIDialog {
   ///
   void _createPayment(ParkingTime item) {
 
-     _paymentHandler.createPayment(item);
+
 
 
   }
@@ -138,7 +136,7 @@ class ClIDialog {
     String vehicleID = stdin.readLineSync()!;
     print("Enter parking session person ID: ");
     String personID = stdin.readLineSync()!;
-    ParkingTime pt = ParkingTime(endTime: DateTime.parse(endTime), vehicleID: int.parse(vehicleID), personID: int.parse(personID));
+    //ParkingTime pt = ParkingTime(endTime: DateTime.parse(endTime), vehicleID: int.parse(vehicleID), personID: int.parse(personID));
 
   }
 
@@ -220,20 +218,19 @@ class ClIDialog {
   void _deleteParkingSpace() {
     print('Enter the ID of the parking space you want to delete: ');
     int id = int.parse(stdin.readLineSync()!);
-
-    ParkingSpace ps = _parkingSpaceRepository.getById(id);
+    ParkingSpace? ps = _watchTower.getSpaceById(id);
     if (ps == null) {
       print('Parking Space not found');
       return;
     }
-    _parkingSpaceRepository.delete(ps);
+    _watchTower.deleteSpace(ps);
   }
 
   /// Edits a parking space based on user input.
   void _editParkingSpace() {
     print('Enter the ID of the parking space you want to edit: ');
     int id = int.parse(stdin.readLineSync()!);
-    ParkingSpace ps = _parkingSpaceRepository.getById(id);
+    ParkingSpace? ps = _watchTower.getSpaceById(id);
     if (ps == null) {
       print('Parking Space not found');
       return;
@@ -248,7 +245,7 @@ class ClIDialog {
     ps.setLocation(location);
     ps.setType(type);
 
-    _parkingSpaceRepository.update(ps);
+    _watchTower.updateSpace(ps);
   }
 
   /// Adds a new parking space based on user input.
@@ -262,12 +259,12 @@ class ClIDialog {
     bool isOccupied = stdin.readLineSync() == 't';
 
     ParkingSpace ps = ParkingSpace(isOccupied: isOccupied, location: location, type: type);
-    _parkingSpaceRepository.add(ps);
+    _watchTower.addSpace(ps);
   }
 
   /// Lists all parking spaces.
   void _listParkingSpaces() {
-    List<ParkingSpace> parkingSpaces = _parkingSpaceRepository.getAll();
+    List<ParkingSpace> parkingSpaces = _watchTower.getAllSpaces();
     for (ParkingSpace parkingSpace in parkingSpaces) {
       print('Parking Space Number: ${parkingSpace.getIsOccupied()}');
       print('Parking Space Type: ${parkingSpace.getType()}');
@@ -280,19 +277,19 @@ class ClIDialog {
   void _deleteVehicle() {
     print('Enter the ID of the vehicle you want to delete: ');
     int id = int.parse(stdin.readLineSync()!);
-    ParkingVehicle pv = _vehicleRepository.getById(id);
+    ParkingVehicle? pv = _watchTower.getVehicleById(id);
     if (pv == null) {
       print('Vehicle not found');
       return;
     }
-    _vehicleRepository.delete(pv);
+    _watchTower.deleteVehicle(pv);
   }
 
   /// Edits a vehicle based on user input.
   void _editVehicle() {
     print('Enter the ID of the vehicle you want to edit: ');
     int id = int.parse(stdin.readLineSync()!);
-    ParkingVehicle pv = _vehicleRepository.getById(id);
+    ParkingVehicle? pv = _watchTower.getVehicleById(id);
     if (pv == null) {
       print('Vehicle not found');
       return;
@@ -305,7 +302,7 @@ class ClIDialog {
     pv.setNumberPlate(numberPlate);
     pv.setVehicleType(vehicleType);
 
-    _vehicleRepository.update(pv);
+    _watchTower.updateVehicle(pv);
   }
 
   /// Adds a new vehicle based on user input.
@@ -317,12 +314,12 @@ class ClIDialog {
     String vehicleType = stdin.readLineSync()!;
 
     ParkingVehicle pv = ParkingVehicle(numberPlate: numberPlate, vehicleType: vehicleType);
-    _vehicleRepository.add(pv);
+    _watchTower.addVehicle(pv);
   }
 
   /// Lists all vehicles.
   void _listVehicles() {
-    List<ParkingVehicle> vehicles = _vehicleRepository.getAll();
+    List<ParkingVehicle> vehicles = _watchTower.getAllVehicles();
     for (ParkingVehicle vehicle in vehicles) {
       print('Number Plate: ${vehicle.getNumberPlate()}');
       print('Vehicle Type: ${vehicle.getVehicleType()}');
@@ -332,7 +329,7 @@ class ClIDialog {
 
   /// Lists all persons.
   void _listPersons() {
-    List<pp.ParkingPerson> persons = _personRepository.getAll();
+    List<pp.ParkingPerson> persons = _watchTower.getAllPersons();
     for (pp.ParkingPerson person in persons) {
       print('First Name: ${person.getFirstName()}');
       print('Last Name: ${person.getLastName()}');
@@ -358,14 +355,14 @@ class ClIDialog {
         FirstName: firstName, LastName: lastName, email: email, phone: phone);
 
     print("Inserting person");
-    _personRepository.add(person);
+    _watchTower.addPerson(person);
   }
 
   /// Edits a person based on user input.
   void _editPerson() {
     print('Enter the ID of the person you want to edit: ');
     int id = int.parse(stdin.readLineSync()!);
-    pp.ParkingPerson person = _personRepository.getById(id);
+    pp.ParkingPerson? person = _watchTower.getPersonById(id);
     if (person == null) {
       print('Person not found');
       return;
@@ -385,21 +382,19 @@ class ClIDialog {
     person.setEmail(email);
     person.setPhone(phone);
 
-
-
-    _personRepository.update(person);
+    _watchTower.updatePerson(person);
   }
 
   /// Deletes a person based on user input.
   void _deletePerson() {
     print('Enter the ID of the person you want to delete: ');
     int inputInt = int.parse(stdin.readLineSync()!);
-    pp.ParkingPerson person = _personRepository.getById(inputInt);
+    pp.ParkingPerson? person = _watchTower.getPersonById(inputInt);
     if (person == null) {
       print('Person not found');
       return;
     }
-    _personRepository.delete(person);
+    _watchTower.deletePerson(person);
   }
 
   /// Validates and converts user input to an integer.
