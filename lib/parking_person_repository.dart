@@ -1,5 +1,5 @@
-import 'package:parking_utils/AbstractRepository.dart';
-import 'package:parking_utils/ParkingPerson.dart';
+import 'package:parking_utils/abstract_repository.dart';
+import 'package:parking_utils/parking_person.dart';
 
 /// Repository class for managing `ParkingPerson` objects.
 class ParkingPersonRepository extends AbstractRepository<ParkingPerson> {

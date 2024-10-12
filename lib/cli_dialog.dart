@@ -1,15 +1,15 @@
 import 'dart:io';
-import 'package:parking_utils/ParkingPerson.dart' as pp;
-import 'package:parking_utils/ParkingPersonRepository.dart';
-import 'package:parking_utils/ParkingTimeRepository.dart';
-import 'package:parking_utils/ParkingVehicleRepository.dart';
-import 'package:parking_utils/ParkingVehicle.dart';
-import 'package:parking_utils/ParkingSpace.dart';
-import 'package:parking_utils/ParkingSpaceRepository.dart';
-import 'package:parking_utils/ParkingTime.dart';
-import 'package:parking_utils/ParkingTimeRepository.dart';
-import 'package:parking_utils/PaymentHandler.dart';
-import 'package:parking_utils/WatchTower.dart';
+import 'package:parking_utils/parking_person.dart' as pp;
+import 'package:parking_utils/parking_person_repository.dart';
+import 'package:parking_utils/parking_time_repository.dart';
+import 'package:parking_utils/parking_vehicle_repository.dart';
+import 'package:parking_utils/parking_vehicle.dart';
+import 'package:parking_utils/parking_space.dart';
+import 'package:parking_utils/parking_space_repository.dart';
+import 'package:parking_utils/parking_time.dart';
+import 'package:parking_utils/parking_time_repository.dart';
+import 'package:parking_utils/payment_handler.dart';
+import 'package:parking_utils/watch_tower.dart';
 
 
 /// A class that handles the command line interface for the parking system.
@@ -121,12 +121,6 @@ class ClIDialog {
     }
   }
   ///
-  void _createPayment(ParkingTime item) {
-
-
-
-
-  }
 
   void _addParkingSession() {
     print('Adding new parking session');
