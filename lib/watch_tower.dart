@@ -7,6 +7,7 @@ import 'package:parking_utils/parking_time_repository.dart';
 import 'package:parking_utils/parking_vehicle.dart';
 import 'package:parking_utils/parking_vehicle_repository.dart';
 import 'package:parking_utils/payment_handler.dart';
+import 'dart:async';
 
 /// A control class based on the singleton pattern.
 ///
@@ -16,19 +17,6 @@ import 'package:parking_utils/payment_handler.dart';
 class WatchTower {
   /// The singleton instance of `WatchTower`.
   static WatchTower? _instance;
-
-  /// Private constructor for `WatchTower`.
-  WatchTower._internal();
-
-  /// Factory constructor for `WatchTower`.
-  ///
-  /// Ensures that only one instance of `WatchTower` is created.
-  factory WatchTower() {
-    if (_instance == null) {
-      _instance = WatchTower._internal();
-    }
-    return _instance!;
-  }
 
   /// Repository for managing `ParkingPerson` objects.
   final _personRepository = ParkingPersonRepository();
@@ -44,6 +32,46 @@ class WatchTower {
 
   /// Handler for processing payments.
   final _paymentHandler = PaymentHandler();
+
+  /// Timer for periodically running tasks.
+  Timer? _timer;
+
+  /// Private constructor for `WatchTower`.
+  ///
+  /// Initializes the timer to run `controlParkingTimes` every minute.
+  WatchTower._internal() {
+    _startTimer();
+  }
+
+  /// Factory constructor for `WatchTower`.
+  ///
+  /// Ensures that only one instance of `WatchTower` is created.
+  factory WatchTower() {
+    if (_instance == null) {
+      _instance = WatchTower._internal();
+    }
+    return _instance!;
+  }
+
+  /// Starts a timer that calls `controlParkingTimes` every minute.
+  void _startTimer() {
+    _timer = Timer.periodic(Duration(minutes: 1), (Timer t) => controlParkingTimes());
+  }
+
+  /// Controls the parking times by deactivating expired parking times.
+  ///
+  /// Retrieves all parking times from the repository and deactivates those
+  /// that have expired.
+  void controlParkingTimes() {
+    List<ParkingTime> times = _timeRepository.getAll();
+    DateTime now = DateTime.now();
+    for (ParkingTime time in times) {
+      if (time.isActive && time.endTime.isBefore(now)) {
+        time.isActive = false;
+        _timeRepository.update(time);
+      }
+    }
+  }
 
   /// Creates a payment for parking.
   ///

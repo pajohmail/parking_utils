@@ -23,6 +23,9 @@ class ParkingTime extends ParkingItem {
   /// The ID of the vehicle.
   int vehicleID;
 
+  /// The status of the parking time.
+  bool isActive = true;
+
   /// Constructor for creating a `ParkingTime` instance.
   ///
   /// \param endTime The end time of the parking.
@@ -35,6 +38,16 @@ class ParkingTime extends ParkingItem {
     required this.spaceID,
     required this.vehicleID,
   });
+  // getters and setters
+  int getPersonID() => personID;
+  int getSpaceID() => spaceID;
+  int getVehicleID() => vehicleID;
+  DateTime getStartTime() => startTime;
+  DateTime getEndTime() => endTime;
+  void setPersonID(int personID) => this.personID = personID;
+  void setSpaceID(int spaceID) => this.spaceID = spaceID;
+  void setVehicleID(int vehicleID) => this.vehicleID = vehicleID;
+  void setStartTime(DateTime startTime) => this.startTime = startTime;
 
   /// Gets the ID of the parking time.
   ///

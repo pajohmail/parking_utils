@@ -37,7 +37,7 @@ class ClIDialog {
           parkingSpaceMenu();
           break;
         case 4:
-        // Add Parking session logic
+          parkingSessionMenu();
           break;
         case 5:
           exit(0);
@@ -102,14 +102,14 @@ class ClIDialog {
           break;
         case 2:
           print('Listing all parking sessions');
-          // List Parking session logic
+          _listParkingSessions();
           break;
         case 3:
           print('Editing parking session');
           // Edit Parking session logic
           break;
         case 4:
-          print('Deleting parking session');
+          print('Stop parking session');
           // Delete Parking session logic
           break;
         case 5:
@@ -121,7 +121,19 @@ class ClIDialog {
     }
   }
   ///
-
+  int _calcTime(DateTime startTime, DateTime endTime) {
+    Duration difference = endTime.difference(startTime);
+    return difference.inMinutes;
+  }
+  void _listParkingSessions() {
+    List<ParkingTime> parkingTimes = _watchTower.getAllTimes();
+    for (ParkingTime parkingTime in parkingTimes) {
+      print('Parking Session End Time: ${parkingTime.getEndTime()}');
+      print('Parking Session Vehicle ID: ${parkingTime.getVehicleID()}');
+      print('Parking Session Person ID: ${parkingTime.getPersonID()}');
+      print('Parking Session Space ID: ${parkingTime.getSpaceID()}');
+    }
+  }
   void _addParkingSession() {
     print('Adding new parking session');
     print("Enter parking session end time: ");
@@ -130,8 +142,12 @@ class ClIDialog {
     String vehicleID = stdin.readLineSync()!;
     print("Enter parking session person ID: ");
     String personID = stdin.readLineSync()!;
-    //ParkingTime pt = ParkingTime(endTime: DateTime.parse(endTime), vehicleID: int.parse(vehicleID), personID: int.parse(personID));
 
+    var tempPerson = _watchTower.getPersonById(int.parse(personID));
+    var tempParkingSpace = _watchTower.getSpaceById(int.parse(vehicleID));
+    _watchTower.createPayment(tempParkingSpace!.getMinuteRate(), _calcTime(DateTime.now(), DateTime.parse(endTime)), tempPerson!.getPhone());    //ParkingTime pt = ParkingTime()
+    ParkingTime pt = ParkingTime(endTime: DateTime.parse(endTime), vehicleID: int.parse(vehicleID), personID: int.parse(personID), spaceID: tempParkingSpace.getID());
+    _watchTower.addTime(pt);
   }
 
   /// Displays the vehicle management menu and handles user input to perform CRUD operations on vehicles.
