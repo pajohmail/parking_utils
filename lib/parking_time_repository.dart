@@ -35,7 +35,8 @@ class ParkingTimeRepository extends AbstractRepository<ParkingTime> {
   /// \return The parking time with the specified ID, or `null` if not found.
   @override
   ParkingTime? getById(int id) {
-    return _parkingTimeList.firstWhere((time) => time.getID() == id, orElse: () => null as ParkingTime);
+    return _parkingTimeList.firstWhere((time) => time.getID() == id,
+        orElse: () => null as ParkingTime);
   }
 
   /// Updates an existing parking time in the repository.
@@ -43,7 +44,8 @@ class ParkingTimeRepository extends AbstractRepository<ParkingTime> {
   /// \param item The parking time with updated information.
   @override
   void update(ParkingTime item) {
-    int index = _parkingTimeList.indexWhere((time) => time.getID() == item.getID());
+    int index =
+        _parkingTimeList.indexWhere((time) => time.getID() == item.getID());
     if (index != -1) {
       _parkingTimeList[index] = item;
     }

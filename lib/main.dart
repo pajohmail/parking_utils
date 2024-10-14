@@ -7,7 +7,8 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  // This part of the code is not in use jet, but it will be in the future when GUI
+  // will be implemented.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

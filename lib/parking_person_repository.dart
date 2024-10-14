@@ -43,7 +43,8 @@ class ParkingPersonRepository extends AbstractRepository<ParkingPerson> {
   /// [item] - The `ParkingPerson` with updated information.
   @override
   void update(ParkingPerson item) {
-    int index = _parkingPersonList.indexWhere((person) => person.getID() == item.getID());
+    int index = _parkingPersonList
+        .indexWhere((person) => person.getID() == item.getID());
     if (index != -1) {
       _parkingPersonList[index] = item;
     }

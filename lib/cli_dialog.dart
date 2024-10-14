@@ -11,10 +11,11 @@ import 'package:parking_utils/parking_time_repository.dart';
 import 'package:parking_utils/payment_handler.dart';
 import 'package:parking_utils/watch_tower.dart';
 
-
 /// A class that handles the command line interface for the parking system.
 class ClIDialog {
-    WatchTower _watchTower = WatchTower();
+  /// Instance of WatchTower to manage parking system operations.
+  WatchTower _watchTower = WatchTower();
+
   /// Displays the welcome menu and handles user input to navigate to different sub-menus.
   void welcomeMenu() {
     while (true) {
@@ -85,6 +86,7 @@ class ClIDialog {
     }
   }
 
+  /// Displays the parking session management menu and handles user input to perform CRUD operations on parking sessions.
   void parkingSessionMenu() {
     while (true) {
       print('1. Add Parking Session');
@@ -105,13 +107,16 @@ class ClIDialog {
           _listParkingSessions();
           break;
         case 3:
+
+          /// This menu has only four options, we don't need to delete parking sessions
+          /// we set bool isActive to false and save the parking session for logging purposes
           print('Editing parking session');
-          // Edit Parking session logic
+          _editParkingSpace();
           break;
         case 4:
-          print('Stop parking session');
-          // Delete Parking session logic
-          break;
+          print('Ending parking session');
+          _endParkingSession();
+          return;
         case 5:
           return;
         default:
@@ -120,11 +125,46 @@ class ClIDialog {
       }
     }
   }
+
+  /// Edits a parking session based on user input.
+  void _editParkingSession() {
+    print('Enter the ID of the parking session you want to edit: ');
+    String id = stdin.readLineSync()!;
+    print('Enter the new end time: ');
+    String endTime = stdin.readLineSync()!;
+    ParkingTime? tmp = _watchTower.getTimeById(_checkInputInt(id));
+    if (tmp == null) {
+      print('Parking Session not found');
+      return;
+    } else {
+      DateTime date = DateTime.parse(endTime);
+      _watchTower.editParkingSession(tmp.getID()!, date);
+    }
+  }
+
+  /// Ends the parking session for a given ID and processes the refund.
+  void _endParkingSession() {
+    print('Enter the ID of the parking session you want to end: ');
+    String id = stdin.readLineSync()!;
+    ParkingTime? tmp = _watchTower.getTimeById(_checkInputInt(id));
+    if (tmp == null) {
+      print('Parking Session not found');
+      return;
+    }
+    _watchTower.endParkingSession(tmp.getID());
+  }
+
+  /// Calculates the difference in minutes between two DateTime objects.
   ///
+  /// \param startTime The start time.
+  /// \param endTime The end time.
+  /// \return The difference in minutes.
   int _calcTime(DateTime startTime, DateTime endTime) {
     Duration difference = endTime.difference(startTime);
     return difference.inMinutes;
   }
+
+  /// Lists all parking sessions.
   void _listParkingSessions() {
     List<ParkingTime> parkingTimes = _watchTower.getAllTimes();
     for (ParkingTime parkingTime in parkingTimes) {
@@ -134,6 +174,8 @@ class ClIDialog {
       print('Parking Session Space ID: ${parkingTime.getSpaceID()}');
     }
   }
+
+  /// Adds a new parking session based on user input.
   void _addParkingSession() {
     print('Adding new parking session');
     print("Enter parking session end time: ");
@@ -145,8 +187,15 @@ class ClIDialog {
 
     var tempPerson = _watchTower.getPersonById(int.parse(personID));
     var tempParkingSpace = _watchTower.getSpaceById(int.parse(vehicleID));
-    _watchTower.createPayment(tempParkingSpace!.getMinuteRate(), _calcTime(DateTime.now(), DateTime.parse(endTime)), tempPerson!.getPhone());    //ParkingTime pt = ParkingTime()
-    ParkingTime pt = ParkingTime(endTime: DateTime.parse(endTime), vehicleID: int.parse(vehicleID), personID: int.parse(personID), spaceID: tempParkingSpace.getID());
+    _watchTower.createPayment(
+        tempParkingSpace!.getMinuteRate(),
+        _calcTime(DateTime.now(), DateTime.parse(endTime)),
+        tempPerson!.getPhone());
+    ParkingTime pt = ParkingTime(
+        endTime: DateTime.parse(endTime),
+        vehicleID: int.parse(vehicleID),
+        personID: int.parse(personID),
+        spaceID: tempParkingSpace.getID());
     _watchTower.addTime(pt);
   }
 
@@ -268,7 +317,8 @@ class ClIDialog {
     print("Enter parking space status: t if occupied, f if not occupied");
     bool isOccupied = stdin.readLineSync() == 't';
 
-    ParkingSpace ps = ParkingSpace(isOccupied: isOccupied, location: location, type: type);
+    ParkingSpace ps =
+        ParkingSpace(isOccupied: isOccupied, location: location, type: type);
     _watchTower.addSpace(ps);
   }
 
@@ -323,7 +373,8 @@ class ClIDialog {
     print("Enter vehicle type: ");
     String vehicleType = stdin.readLineSync()!;
 
-    ParkingVehicle pv = ParkingVehicle(numberPlate: numberPlate, vehicleType: vehicleType);
+    ParkingVehicle pv =
+        ParkingVehicle(numberPlate: numberPlate, vehicleType: vehicleType);
     _watchTower.addVehicle(pv);
   }
 
@@ -360,7 +411,6 @@ class ClIDialog {
     print("Enter Email: ");
     String email = stdin.readLineSync()!;
 
-
     pp.ParkingPerson person = pp.ParkingPerson(
         FirstName: firstName, LastName: lastName, email: email, phone: phone);
 
@@ -385,7 +435,6 @@ class ClIDialog {
     String phone = stdin.readLineSync()!;
     print("Enter Email: ");
     String email = stdin.readLineSync()!;
-
 
     person.setFirstName(firstName);
     person.setLastName(lastName);

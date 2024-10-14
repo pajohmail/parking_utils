@@ -10,11 +10,10 @@ class PaymentHandler {
   }
 
   /// This method will simulate the refund process.
-/// It will return a Future<bool> with the result of the refund.
+  /// It will return a Future<bool> with the result of the refund.
   Future<bool> refund(String phoneNumber, double amount) async {
     // Simulate the refund process
     await Future.delayed(Duration(seconds: 2));
     return true;
   }
-
 }

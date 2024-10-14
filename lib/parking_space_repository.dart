@@ -37,7 +37,8 @@ class ParkingSpaceRepository extends AbstractRepository<ParkingSpace> {
   /// \return The parking space with the specified ID, or `null` if not found.
   @override
   ParkingSpace getById(int id) {
-    return _parkingSpaceList.firstWhere((space) => space.getID() == id, orElse: () => null as ParkingSpace);
+    return _parkingSpaceList.firstWhere((space) => space.getID() == id,
+        orElse: () => null as ParkingSpace);
   }
 
   /// Updates an existing parking space in the repository.
@@ -45,7 +46,8 @@ class ParkingSpaceRepository extends AbstractRepository<ParkingSpace> {
   /// \param item The parking space with updated information.
   @override
   void update(ParkingSpace item) {
-    int index = _parkingSpaceList.indexWhere((space) => space.getID() == item.getID());
+    int index =
+        _parkingSpaceList.indexWhere((space) => space.getID() == item.getID());
     if (index != -1) {
       _parkingSpaceList[index] = item;
     }

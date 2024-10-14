@@ -35,7 +35,8 @@ class ParkingVehicleRepository extends AbstractRepository<ParkingVehicle> {
   /// \return The parking vehicle with the specified ID, or `null` if not found.
   @override
   ParkingVehicle getById(int id) {
-    return _parkingVehicleList.firstWhere((vehicle) => vehicle.getID() == id, orElse: () => null as ParkingVehicle);
+    return _parkingVehicleList.firstWhere((vehicle) => vehicle.getID() == id,
+        orElse: () => null as ParkingVehicle);
   }
 
   /// Updates an existing parking vehicle in the repository.
@@ -43,7 +44,8 @@ class ParkingVehicleRepository extends AbstractRepository<ParkingVehicle> {
   /// \param item The parking vehicle with updated information.
   @override
   void update(ParkingVehicle item) {
-    int index = _parkingVehicleList.indexWhere((vehicle) => vehicle.getID() == item.getID());
+    int index = _parkingVehicleList
+        .indexWhere((vehicle) => vehicle.getID() == item.getID());
     if (index != -1) {
       _parkingVehicleList[index] = item;
     }
@@ -54,6 +56,7 @@ class ParkingVehicleRepository extends AbstractRepository<ParkingVehicle> {
   /// \param item The parking vehicle to delete.
   @override
   void delete(ParkingVehicle item) {
-    _parkingVehicleList.removeWhere((vehicle) => vehicle.getID() == item.getID());
+    _parkingVehicleList
+        .removeWhere((vehicle) => vehicle.getID() == item.getID());
   }
 }

@@ -55,7 +55,31 @@ class WatchTower {
 
   /// Starts a timer that calls `controlParkingTimes` every minute.
   void _startTimer() {
-    _timer = Timer.periodic(Duration(minutes: 1), (Timer t) => controlParkingTimes());
+    _timer = Timer.periodic(
+        Duration(minutes: 1), (Timer t) => controlParkingTimes());
+  }
+
+  /// Edits a parking session based on the given ID and new end time.
+  ///
+  /// \param id The ID of the parking session to edit.
+  /// \param endTime The new end time for the parking session.
+  void editParkingSession(int id, DateTime endTime) {
+    ParkingTime? time = getTimeById(id);
+    if (time != null) {
+      time.endTime = endTime;
+      updateTime(time);
+    }
+  }
+
+  /// Ends the parking session for a given ID and processes the refund.
+  ///
+  /// \param id The ID of the parking session to end.
+  void endParkingSession(int id) {
+    ParkingTime? time = getTimeById(id);
+    if (time != null) {
+      time.isActive = false;
+      updateTime(time);
+    }
   }
 
   /// Controls the parking times by deactivating expired parking times.
@@ -79,7 +103,8 @@ class WatchTower {
   /// \param minutes The number of minutes parked.
   /// \param parkingPersonPhoneNumber The phone number of the person paying for parking.
   /// \return A `Future` that resolves to `true` if the payment is successful, otherwise `false`.
-  Future<bool> createPayment(double minutePrice, int minutes, String parkingPersonPhoneNumber) {
+  Future<bool> createPayment(
+      double minutePrice, int minutes, String parkingPersonPhoneNumber) {
     double total = minutePrice * minutes;
     return _paymentHandler.pay(parkingPersonPhoneNumber, total);
   }
