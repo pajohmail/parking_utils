@@ -107,9 +107,6 @@ class ClIDialog {
           _listParkingSessions();
           break;
         case 3:
-
-          /// This menu has only four options, we don't need to delete parking sessions
-          /// we set bool isActive to false and save the parking session for logging purposes
           print('Editing parking session');
           _editParkingSpace();
           break;
@@ -130,14 +127,15 @@ class ClIDialog {
   void _editParkingSession() {
     print('Enter the ID of the parking session you want to edit: ');
     String id = stdin.readLineSync()!;
-    print('Enter the new end time: ');
+    print('Enter the new end time in minutes: ');
     String endTime = stdin.readLineSync()!;
+
     ParkingTime? tmp = _watchTower.getTimeById(_checkInputInt(id));
     if (tmp == null) {
       print('Parking Session not found');
       return;
     } else {
-      DateTime date = DateTime.parse(endTime);
+      DateTime date = _calcEndTime(tmp.getStartTime(), _checkInputInt(endTime));
       _watchTower.editParkingSession(tmp.getID()!, date);
     }
   }
@@ -164,6 +162,11 @@ class ClIDialog {
     return difference.inMinutes;
   }
 
+  /// Calculates the end time based on the start time and the duration in minutes.
+  DateTime _calcEndTime(DateTime startTime, int minutes) {
+    return startTime.add(Duration(minutes: minutes));
+  }
+
   /// Lists all parking sessions.
   void _listParkingSessions() {
     List<ParkingTime> parkingTimes = _watchTower.getAllTimes();
@@ -178,24 +181,34 @@ class ClIDialog {
   /// Adds a new parking session based on user input.
   void _addParkingSession() {
     print('Adding new parking session');
-    print("Enter parking session end time: ");
-    String endTime = stdin.readLineSync()!;
+    print("Enter parking session duration in minutes: ");
+    String durationStr = stdin.readLineSync()!;
     print("Enter parking session vehicle ID: ");
     String vehicleID = stdin.readLineSync()!;
     print("Enter parking session person ID: ");
     String personID = stdin.readLineSync()!;
+    print('Enter parking session space ID: ');
+    String spaceID = stdin.readLineSync()!;
 
-    var tempPerson = _watchTower.getPersonById(int.parse(personID));
-    var tempParkingSpace = _watchTower.getSpaceById(int.parse(vehicleID));
-    _watchTower.createPayment(
-        tempParkingSpace!.getMinuteRate(),
-        _calcTime(DateTime.now(), DateTime.parse(endTime)),
-        tempPerson!.getPhone());
+    int duration = _checkInputInt(durationStr);
+    DateTime endTime = DateTime.now().add(Duration(minutes: duration));
+
+    var tempPerson = _watchTower.getPersonById(_checkInputInt(personID));
+    var tempParkVehicle = _watchTower.getVehicleById(_checkInputInt(vehicleID));
+    var tempParkingSpace = _watchTower.getSpaceById(_checkInputInt(spaceID));
+
+    if (tempPerson == null || tempParkingSpace == null || tempParkVehicle == null) {
+      print('Person, Parking Space, or Parking Vehicle not found');
+      return;
+    }
+
     ParkingTime pt = ParkingTime(
-        endTime: DateTime.parse(endTime),
-        vehicleID: int.parse(vehicleID),
-        personID: int.parse(personID),
-        spaceID: tempParkingSpace.getID());
+      endTime: endTime,
+      vehicleID: _checkInputInt(vehicleID),
+      personID: _checkInputInt(personID),
+      spaceID: _checkInputInt(spaceID),
+    );
+
     _watchTower.addTime(pt);
   }
 
@@ -464,13 +477,13 @@ class ClIDialog {
     while (true) {
       try {
         int inputInt = int.parse(input);
-        if (inputInt >= 1 && inputInt <= 5) {
-          return inputInt;
-        }
+        return inputInt;
+
       } catch (e) {
         // Do nothing, will prompt again
       }
       print('Invalid choice');
+      print('input was $input');
       input = stdin.readLineSync()!;
     }
   }
