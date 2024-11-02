@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:parking_utils/cli_dialog.dart';
+import 'package:parking_utils/client/cli_dialog.dart';
 
 /// The main entry point of the application.
 void main() {

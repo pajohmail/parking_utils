@@ -1,10 +1,7 @@
-import 'package:parking_utils/parking_item.dart';
-import 'package:parking_utils/parking_vehicle.dart';
+import 'package:parking_utils/parking_item/parking_item.dart';
+import 'package:parking_utils/parking_item/parking_vehicle.dart';
 
-/// Class representing credit card details.
-class CreditCardDetails {
-  // Define the properties and methods for CreditCardDetails
-}
+
 
 /// Class representing a person associated with parking.
 ///

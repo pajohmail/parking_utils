@@ -1,5 +1,5 @@
-import 'package:parking_utils/abstract_repository.dart';
-import 'package:parking_utils/parking_person.dart';
+import 'package:parking_utils/repository/abstract_repository.dart';
+import 'package:parking_utils/parking_item/parking_person.dart';
 
 /// Repository class for managing `ParkingPerson` objects.
 class ParkingPersonRepository extends AbstractRepository<ParkingPerson> {
@@ -12,7 +12,7 @@ class ParkingPersonRepository extends AbstractRepository<ParkingPerson> {
   ///
   /// [item] - The `ParkingPerson` to add.
   @override
-  void add(ParkingPerson item) {
+  Future<void> add(ParkingPerson item) async {
     if (item.getID() == 0) {
       item.setID(_ParkingPersonID);
       _ParkingPersonID++;
@@ -24,7 +24,7 @@ class ParkingPersonRepository extends AbstractRepository<ParkingPerson> {
   ///
   /// Returns a list of all `ParkingPerson` objects.
   @override
-  List<ParkingPerson> getAll() {
+  Future<List<ParkingPerson>> getAll() async {
     return _parkingPersonList;
   }
 
@@ -34,17 +34,16 @@ class ParkingPersonRepository extends AbstractRepository<ParkingPerson> {
   ///
   /// Returns the `ParkingPerson` with the specified ID.
   @override
-  ParkingPerson getById(int id) {
-    return _parkingPersonList.firstWhere((person) => person.getID() == id);
+  Future<ParkingPerson?> getById(int id) async {
+    //return _parkingPersonList.firstWhere((person) => person.getID() == id, orElse: () => null);
   }
 
   /// Updates an existing `ParkingPerson` in the repository.
   ///
   /// [item] - The `ParkingPerson` with updated information.
   @override
-  void update(ParkingPerson item) {
-    int index = _parkingPersonList
-        .indexWhere((person) => person.getID() == item.getID());
+  Future<void> update(ParkingPerson item) async {
+    int index = _parkingPersonList.indexWhere((person) => person.getID() == item.getID());
     if (index != -1) {
       _parkingPersonList[index] = item;
     }
@@ -54,7 +53,7 @@ class ParkingPersonRepository extends AbstractRepository<ParkingPerson> {
   ///
   /// [item] - The `ParkingPerson` to delete.
   @override
-  void delete(ParkingPerson item) {
+  Future<void> delete(ParkingPerson item) async {
     _parkingPersonList.removeWhere((person) => person.getID() == item.getID());
   }
 }

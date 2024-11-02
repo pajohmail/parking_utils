@@ -1,4 +1,4 @@
-import 'parking_space.dart';
+import '../parking_item/parking_space.dart';
 import 'abstract_repository.dart';
 
 /// Repository class for managing `ParkingSpace` objects.
@@ -16,7 +16,7 @@ class ParkingSpaceRepository extends AbstractRepository<ParkingSpace> {
   /// If the parking space does not have an ID, it assigns a new unique ID.
   /// \param item The parking space to add.
   @override
-  void add(ParkingSpace item) {
+  Future<void> add(ParkingSpace item) async {
     if (item.getID() == 0) {
       item.setID(_parkingSpaceID++);
     }
@@ -27,7 +27,7 @@ class ParkingSpaceRepository extends AbstractRepository<ParkingSpace> {
   ///
   /// \return A list of all parking spaces.
   @override
-  List<ParkingSpace> getAll() {
+  Future<List<ParkingSpace>> getAll() async {
     return _parkingSpaceList;
   }
 
@@ -36,18 +36,18 @@ class ParkingSpaceRepository extends AbstractRepository<ParkingSpace> {
   /// \param id The ID of the parking space to retrieve.
   /// \return The parking space with the specified ID, or `null` if not found.
   @override
-  ParkingSpace getById(int id) {
-    return _parkingSpaceList.firstWhere((space) => space.getID() == id,
-        orElse: () => null as ParkingSpace);
+  Future<ParkingSpace?> getById(int id) async {
+    //return _parkingSpaceList.firstWhere((space) => space.getID() == id,
+    //    orElse: () => null);
   }
 
   /// Updates an existing parking space in the repository.
   ///
   /// \param item The parking space with updated information.
   @override
-  void update(ParkingSpace item) {
+  Future<void> update(ParkingSpace item) async {
     int index =
-        _parkingSpaceList.indexWhere((space) => space.getID() == item.getID());
+    _parkingSpaceList.indexWhere((space) => space.getID() == item.getID());
     if (index != -1) {
       _parkingSpaceList[index] = item;
     }
@@ -57,7 +57,7 @@ class ParkingSpaceRepository extends AbstractRepository<ParkingSpace> {
   ///
   /// \param item The parking space to delete.
   @override
-  void delete(ParkingSpace item) {
+  Future<void> delete(ParkingSpace item) async {
     _parkingSpaceList.removeWhere((space) => space.getID() == item.getID());
   }
 }

@@ -1,4 +1,4 @@
-import 'package:parking_utils/parking_item.dart';
+import 'package:parking_utils/parking_item/parking_item.dart';
 
 /// Class representing a parking space.
 ///

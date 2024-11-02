@@ -1,4 +1,4 @@
-import 'package:parking_utils/parking_item.dart';
+import 'package:parking_utils/parking_item/parking_item.dart';
 
 /// An abstract repository class for managing parking items.
 ///
@@ -15,7 +15,7 @@ abstract class AbstractRepository<T extends ParkingItem> {
   /// If the item does not have an ID, it assigns a new unique ID.
   ///
   /// \param item The parking item to add.
-  void add(T item) {
+  Future<void> add(T item) async {
     if (item.getID() == 0) {
       item.setID(_ParkingSpaceID);
       _ParkingSpaceID++;
@@ -26,7 +26,7 @@ abstract class AbstractRepository<T extends ParkingItem> {
   /// Retrieves all parking items from the repository.
   ///
   /// \return A list of all parking items.
-  List<T> getAll() {
+  Future<List<T>> getAll() async {
     return _parkingItemList;
   }
 
@@ -34,7 +34,7 @@ abstract class AbstractRepository<T extends ParkingItem> {
   ///
   /// \param id The ID of the parking item to retrieve.
   /// \return The parking item with the specified ID, or null if not found.
-  T? getById(int id) {
+  Future<T?> getById(int id) async {
     return _parkingItemList
         .cast<T?>()
         .firstWhere((space) => space?.getID() == id, orElse: () => null);
@@ -43,9 +43,9 @@ abstract class AbstractRepository<T extends ParkingItem> {
   /// Updates an existing parking item in the repository.
   ///
   /// \param item The parking item to update.
-  void update(T item) {
+  Future<void> update(T item) async {
     int index =
-        _parkingItemList.indexWhere((space) => space.getID() == item.getID());
+    _parkingItemList.indexWhere((space) => space.getID() == item.getID());
     if (index != -1) {
       _parkingItemList[index] = item;
     }
@@ -54,7 +54,7 @@ abstract class AbstractRepository<T extends ParkingItem> {
   /// Deletes a parking item from the repository.
   ///
   /// \param item The parking item to delete.
-  void delete(T item) {
+  Future<void> delete(T item) async {
     _parkingItemList.removeWhere((space) => space.getID() == item.getID());
   }
 }

@@ -1,5 +1,5 @@
 import 'abstract_repository.dart';
-import 'parking_vehicle.dart';
+import '../parking_item/parking_vehicle.dart';
 
 /// Repository class for managing `ParkingVehicle` objects.
 ///
@@ -16,7 +16,7 @@ class ParkingVehicleRepository extends AbstractRepository<ParkingVehicle> {
   /// If the parking vehicle does not have an ID, it assigns a new unique ID.
   /// \param item The parking vehicle to add.
   @override
-  void add(ParkingVehicle item) {
+  Future<void> add(ParkingVehicle item) async {
     item.setID(_parkingVehicleID++);
     _parkingVehicleList.add(item);
   }
@@ -25,7 +25,7 @@ class ParkingVehicleRepository extends AbstractRepository<ParkingVehicle> {
   ///
   /// \return A list of all parking vehicles.
   @override
-  List<ParkingVehicle> getAll() {
+  Future<List<ParkingVehicle>> getAll() async {
     return _parkingVehicleList;
   }
 
@@ -34,16 +34,16 @@ class ParkingVehicleRepository extends AbstractRepository<ParkingVehicle> {
   /// \param id The ID of the parking vehicle to retrieve.
   /// \return The parking vehicle with the specified ID, or `null` if not found.
   @override
-  ParkingVehicle getById(int id) {
-    return _parkingVehicleList.firstWhere((vehicle) => vehicle.getID() == id,
-        orElse: () => null as ParkingVehicle);
+  Future<ParkingVehicle?> getById(int id) async {
+    //return _parkingVehicleList.firstWhere((vehicle) => vehicle.getID() == id,
+      //  orElse: () => null);
   }
 
   /// Updates an existing parking vehicle in the repository.
   ///
   /// \param item The parking vehicle with updated information.
   @override
-  void update(ParkingVehicle item) {
+  Future<void> update(ParkingVehicle item) async {
     int index = _parkingVehicleList
         .indexWhere((vehicle) => vehicle.getID() == item.getID());
     if (index != -1) {
@@ -55,7 +55,7 @@ class ParkingVehicleRepository extends AbstractRepository<ParkingVehicle> {
   ///
   /// \param item The parking vehicle to delete.
   @override
-  void delete(ParkingVehicle item) {
+  Future<void> delete(ParkingVehicle item) async {
     _parkingVehicleList
         .removeWhere((vehicle) => vehicle.getID() == item.getID());
   }

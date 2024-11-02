@@ -1,4 +1,4 @@
-import 'parking_time.dart';
+import '../parking_item/parking_time.dart';
 import 'abstract_repository.dart';
 
 /// Repository class for managing `ParkingTime` objects.
@@ -16,7 +16,7 @@ class ParkingTimeRepository extends AbstractRepository<ParkingTime> {
   /// If the parking time does not have an ID, it assigns a new unique ID.
   /// \param item The parking time to add.
   @override
-  void add(ParkingTime item) {
+  Future<void> add(ParkingTime item) async {
     item.setID(_parkingTimeID++);
     _parkingTimeList.add(item);
   }
@@ -25,7 +25,7 @@ class ParkingTimeRepository extends AbstractRepository<ParkingTime> {
   ///
   /// \return A list of all parking times.
   @override
-  List<ParkingTime> getAll() {
+  Future<List<ParkingTime>> getAll() async {
     return _parkingTimeList;
   }
 
@@ -34,18 +34,18 @@ class ParkingTimeRepository extends AbstractRepository<ParkingTime> {
   /// \param id The ID of the parking time to retrieve.
   /// \return The parking time with the specified ID, or `null` if not found.
   @override
-  ParkingTime? getById(int id) {
-    return _parkingTimeList.firstWhere((time) => time.getID() == id,
-        orElse: () => null as ParkingTime);
+  Future<ParkingTime?> getById(int id) async {
+    //return _parkingTimeList.firstWhere((time) => time.getID() == id
+       // orElse: () => null);
   }
 
   /// Updates an existing parking time in the repository.
   ///
   /// \param item The parking time with updated information.
   @override
-  void update(ParkingTime item) {
+  Future<void> update(ParkingTime item) async {
     int index =
-        _parkingTimeList.indexWhere((time) => time.getID() == item.getID());
+    _parkingTimeList.indexWhere((time) => time.getID() == item.getID());
     if (index != -1) {
       _parkingTimeList[index] = item;
     }
@@ -55,7 +55,7 @@ class ParkingTimeRepository extends AbstractRepository<ParkingTime> {
   ///
   /// \param item The parking time to delete.
   @override
-  void delete(ParkingTime item) {
+  Future<void> delete(ParkingTime item) async {
     _parkingTimeList.removeWhere((time) => time.getID() == item.getID());
   }
 }

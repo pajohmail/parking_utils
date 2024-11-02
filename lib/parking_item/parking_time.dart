@@ -1,5 +1,5 @@
 import 'parking_item.dart';
-import 'abstract_repository.dart';
+import '../repository/abstract_repository.dart';
 
 /// Class representing a parking time.
 ///
