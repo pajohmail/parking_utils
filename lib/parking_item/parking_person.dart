@@ -41,6 +41,13 @@ class ParkingPerson extends ParkingItem {
   /// Sets the first name of the person.
   ///
   /// \param FirstName The new first name to set.
+
+  @override
+  int getID() => super.getID();
+
+  @override
+  void setID(int id) => super.setID(id);
+
   void setFirstName(String FirstName) {
     this._firstName = FirstName;
   }
@@ -93,4 +100,28 @@ class ParkingPerson extends ParkingItem {
   String getPhone() {
     return this._phone;
   }
+  /// toMap
+/// Converts the `ParkingPerson` instance to a map.
+  Map<String, dynamic> toMap() {
+    return {
+      'id': getID(),
+      'first_name': getFirstName(),
+      'last_name': getLastName(),
+      'email': getEmail(),
+      'phone': getPhone(),
+    };
+  }
+  /// fromMap
+/// Creates a `ParkingPerson` instance from a map.
+  static ParkingPerson fromMap(Map<String, dynamic> map) {
+    return ParkingPerson(
+      FirstName: map['first_name'],
+      LastName: map['last_name'],
+      email: map['email'],
+      phone: map['phone'],
+    )
+      ..setID(map['id']);
+  }
+  /// addVehicle
+
 }

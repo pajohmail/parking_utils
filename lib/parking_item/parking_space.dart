@@ -4,6 +4,8 @@ import 'package:parking_utils/parking_item/parking_item.dart';
 ///
 /// This class extends `ParkingItem` and includes details about the parking space such as its occupancy status, location, type, and rate per minute.
 class ParkingSpace extends ParkingItem {
+  int id = 0; // Add id property
+
   /// Indicates whether the parking space is occupied.
   bool _isOccupied = false;
 
@@ -83,5 +85,33 @@ class ParkingSpace extends ParkingItem {
   /// \param location The new location to set.
   void setLocation(String location) {
     this._location = location;
+  }
+
+  @override
+  int getID() => super.getID();
+
+  @override
+  void setID(int id) => super.setID(id);
+
+  /// Converts the `ParkingSpace` instance to a map.
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'isOccupied': _isOccupied ? 1 : 0,
+      'location': _location,
+      'type': _type,
+      'minuteRate': _minuteRate,
+    };
+  }
+
+  /// Creates a `ParkingSpace` instance from a map.
+  static ParkingSpace fromMap(Map<String, dynamic> map) {
+    return ParkingSpace(
+      isOccupied: map['isOccupied'] == 1,
+      location: map['location'],
+      type: map['type'],
+    )
+      ..id = map['id']
+      .._minuteRate = map['minuteRate'];
   }
 }

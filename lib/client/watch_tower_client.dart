@@ -66,7 +66,7 @@ class WatchTower {
   Future<void> editParkingSession(int id, DateTime endTime) async {
     ParkingTime? time = await getTimeById(id);
     if (time != null) {
-      time.endTime = endTime;
+      time.setEndTime(endTime);
       await updateTime(time);
     }
   }
@@ -77,7 +77,7 @@ class WatchTower {
   Future<void> endParkingSession(int id) async {
     ParkingTime? time = await getTimeById(id);
     if (time != null) {
-      time.isActive = false;
+      time.setIsActive(false);
       await updateTime(time);
     }
   }
@@ -90,8 +90,8 @@ class WatchTower {
     List<ParkingTime> times = await _timeRepository.getAll();
     DateTime now = DateTime.now();
     for (ParkingTime time in times) {
-      if (time.isActive && time.endTime.isBefore(now)) {
-        time.isActive = false;
+      if (time.isActive() && time.getEndTime().isBefore(now)) {
+        time.setIsActive(false);
         await _timeRepository.update(time);
       }
     }

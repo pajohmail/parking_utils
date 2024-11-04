@@ -5,26 +5,23 @@ import '../repository/abstract_repository.dart';
 ///
 /// This class extends `ParkingItem` and includes details about the parking time such as start time, end time, person ID, space ID, and vehicle ID.
 class ParkingTime extends ParkingItem {
-  /// The unique identifier for the parking time.
-  int id = 0;
-
   /// The start time of the parking.
-  DateTime startTime = DateTime.now();
+  DateTime _startTime = DateTime.now();
 
   /// The end time of the parking.
-  DateTime endTime;
+  DateTime _endTime;
 
   /// The ID of the person associated with the parking.
-  int personID;
+  int _personID;
 
   /// The ID of the parking space.
-  int spaceID;
+  int _spaceID;
 
   /// The ID of the vehicle.
-  int vehicleID;
+  int _vehicleID;
 
   /// The status of the parking time.
-  bool isActive = true;
+  bool _isActive = true;
 
   /// Constructor for creating a `ParkingTime` instance.
   ///
@@ -33,29 +30,64 @@ class ParkingTime extends ParkingItem {
   /// \param spaceID The ID of the parking space.
   /// \param vehicleID The ID of the vehicle.
   ParkingTime({
-    required this.endTime,
-    required this.personID,
-    required this.spaceID,
-    required this.vehicleID,
-  });
+    required DateTime endTime,
+    required int personID,
+    required int spaceID,
+    required int vehicleID,
+  })  : _endTime = endTime,
+        _personID = personID,
+        _spaceID = spaceID,
+        _vehicleID = vehicleID;
+
   // getters and setters
-  int getPersonID() => personID;
-  int getSpaceID() => spaceID;
-  int getVehicleID() => vehicleID;
-  DateTime getStartTime() => startTime;
-  DateTime getEndTime() => endTime;
-  void setPersonID(int personID) => this.personID = personID;
-  void setSpaceID(int spaceID) => this.spaceID = spaceID;
-  void setVehicleID(int vehicleID) => this.vehicleID = vehicleID;
-  void setStartTime(DateTime startTime) => this.startTime = startTime;
+  bool isActive() => _isActive;
+  int getPersonID() => _personID;
+  int getSpaceID() => _spaceID;
+  int getVehicleID() => _vehicleID;
+  DateTime getStartTime() => _startTime;
+  DateTime getEndTime() => _endTime;
+  void setIsActive(bool isActive) => _isActive = isActive;
+  void setPersonID(int personID) => _personID = personID;
+  void setSpaceID(int spaceID) => _spaceID = spaceID;
+  void setVehicleID(int vehicleID) => _vehicleID = vehicleID;
+  void setStartTime(DateTime startTime) => _startTime = startTime;
+  void setEndTime(DateTime endTime) => _endTime = endTime;
 
   /// Gets the ID of the parking time.
   ///
   /// \return The current ID of the parking time.
-  int getID() => id;
+  @override
+  int getID() => super.getID();
 
   /// Sets the ID of the parking time.
   ///
   /// \param id The new ID to set.
-  void setID(int id) => this.id = id;
+  @override
+  void setID(int id) => super.setID(id);
+
+  /// Converts the `ParkingTime` instance to a map.
+  Map<String, dynamic> toMap() {
+    return {
+      'id': getID(),
+      'startTime': _startTime.toIso8601String(),
+      'endTime': _endTime.toIso8601String(),
+      'personID': _personID,
+      'spaceID': _spaceID,
+      'vehicleID': _vehicleID,
+      'isActive': _isActive ? 1 : 0,
+    };
+  }
+
+  /// Creates a `ParkingTime` instance from a map.
+  static ParkingTime fromMap(Map<String, dynamic> map) {
+    return ParkingTime(
+      endTime: DateTime.parse(map['endTime']),
+      personID: map['personID'],
+      spaceID: map['spaceID'],
+      vehicleID: map['vehicleID'],
+    )
+      ..setID(map['id'])
+      ..setStartTime(DateTime.parse(map['startTime']))
+      .._isActive = map['isActive'] == 1;
+  }
 }

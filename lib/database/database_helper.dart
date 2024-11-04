@@ -96,7 +96,7 @@ class DatabaseHelper {
       'ParkingPerson',
       person.toMap(),
       where: 'id = ?',
-      whereArgs: [person.getId],
+      whereArgs: [person.getID()],
     );
   }
 
@@ -129,7 +129,7 @@ class DatabaseHelper {
       'ParkingVehicle',
       vehicle.toMap(),
       where: 'id = ?',
-      whereArgs: [vehicle.getId],
+      whereArgs: [vehicle.id],
     );
   }
 
@@ -162,7 +162,7 @@ class DatabaseHelper {
       'ParkingSpace',
       space.toMap(),
       where: 'id = ?',
-      whereArgs: [space.getId],
+      whereArgs: [space.id],
     );
   }
 
@@ -195,7 +195,7 @@ class DatabaseHelper {
       'ParkingTime',
       time.toMap(),
       where: 'id = ?',
-      whereArgs: [time.getId],
+      whereArgs: [time.id],
     );
   }
 
@@ -207,4 +207,100 @@ class DatabaseHelper {
       whereArgs: [id],
     );
   }
+}
+
+class ParkingVehicle {
+  int id;
+  String numberPlate;
+  String vehicleType;
+
+  ParkingVehicle({required this.id, required this.numberPlate, required this.vehicleType});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'numberPlate': numberPlate,
+      'vehicleType': vehicleType,
+    };
+  }
+
+  static ParkingVehicle fromMap(Map<String, dynamic> map) {
+    return ParkingVehicle(
+      id: map['id'],
+      numberPlate: map['numberPlate'],
+      vehicleType: map['vehicleType'],
+    );
+  }
+
+  int get getId => id;
+}
+
+class ParkingSpace {
+  int id;
+  bool isOccupied;
+  String location;
+  String type;
+  double minuteRate;
+
+  ParkingSpace({required this.id, required this.isOccupied, required this.location, required this.type, required this.minuteRate});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'isOccupied': isOccupied ? 1 : 0,
+      'location': location,
+      'type': type,
+      'minuteRate': minuteRate,
+    };
+  }
+
+  static ParkingSpace fromMap(Map<String, dynamic> map) {
+    return ParkingSpace(
+      id: map['id'],
+      isOccupied: map['isOccupied'] == 1,
+      location: map['location'],
+      type: map['type'],
+      minuteRate: map['minuteRate'],
+    );
+  }
+
+  int get getId => id;
+}
+
+class ParkingTime {
+  int id;
+  String startTime;
+  String endTime;
+  int personID;
+  int spaceID;
+  int vehicleID;
+  bool isActive;
+
+  ParkingTime({required this.id, required this.startTime, required this.endTime, required this.personID, required this.spaceID, required this.vehicleID, required this.isActive});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'startTime': startTime,
+      'endTime': endTime,
+      'personID': personID,
+      'spaceID': spaceID,
+      'vehicleID': vehicleID,
+      'isActive': isActive ? 1 : 0,
+    };
+  }
+
+  static ParkingTime fromMap(Map<String, dynamic> map) {
+    return ParkingTime(
+      id: map['id'],
+      startTime: map['startTime'],
+      endTime: map['endTime'],
+      personID: map['personID'],
+      spaceID: map['spaceID'],
+      vehicleID: map['vehicleID'],
+      isActive: map['isActive'] == 1,
+    );
+  }
+
+  int get getId => id;
 }
