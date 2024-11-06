@@ -23,13 +23,16 @@ class ParkingSpace extends ParkingItem {
   /// \param isOccupied Indicates whether the parking space is occupied.
   /// \param location The location of the parking space.
   /// \param type The type of the parking space.
+  /// \param minuteRate The rate per minute for using the parking space.
   ParkingSpace({
     required bool isOccupied,
     required String location,
     required String type,
+    required double minuteRate,
   })  : _isOccupied = isOccupied,
         _location = location,
-        _type = type;
+        _type = type,
+        _minuteRate = minuteRate;
 
   /// Gets the occupancy status of the parking space.
   ///
@@ -110,8 +113,7 @@ class ParkingSpace extends ParkingItem {
       isOccupied: map['isOccupied'] == 1,
       location: map['location'],
       type: map['type'],
-    )
-      ..id = map['id']
-      .._minuteRate = map['minuteRate'];
+      minuteRate: map['minuteRate'],
+    )..id = map['id'];
   }
 }

@@ -4,6 +4,9 @@ import 'package:parking_utils/parking_item/parking_item.dart';
 ///
 /// This class extends `ParkingItem` and includes details about the vehicle such as its number plate and type.
 class ParkingVehicle extends ParkingItem {
+
+
+
   /// The number plate of the vehicle.
   String _numberPlate = '';
 
@@ -47,4 +50,18 @@ class ParkingVehicle extends ParkingItem {
   String getVehicleType() {
     return this._vehicleType;
   }
+
+  fromMap(Map<String, dynamic> map) {
+    _numberPlate = map['numberPlate'];
+    _vehicleType = map['vehicleType'];
+  }
+
+  toMap() {
+    return {
+      'numberPlate': _numberPlate,
+      'vehicleType': _vehicleType,
+    };
+  }
+
+
 }

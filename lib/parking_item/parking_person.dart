@@ -19,9 +19,6 @@ class ParkingPerson extends ParkingItem {
   /// The phone number of the person.
   String _phone = '';
 
-  /// A list of vehicles owned by the person.
-  List<ParkingVehicle> _ownedVehicleList = [];
-
   /// Constructor for creating a `ParkingPerson` instance.
   ///
   /// \param FirstName The first name of the person.

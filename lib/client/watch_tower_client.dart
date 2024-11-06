@@ -8,7 +8,7 @@ import 'package:parking_utils/parking_item/parking_vehicle.dart';
 import 'package:parking_utils/repository/parking_vehicle_repository.dart';
 import 'package:parking_utils/repository/payment_handler.dart';
 import 'dart:async';
-
+/**
 /// A control class based on the singleton pattern.
 ///
 /// This class controls access to the child classes of `AbstractRepository`
@@ -252,4 +252,4 @@ class WatchTower {
   Future<void> deleteVehicle(ParkingVehicle vehicle) async {
     await _vehicleRepository.delete(vehicle);
   }
-}
+} */

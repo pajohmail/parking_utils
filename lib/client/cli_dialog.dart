@@ -9,11 +9,12 @@ import 'package:parking_utils/repository/parking_space_repository.dart';
 import 'package:parking_utils/parking_item/parking_time.dart';
 import 'package:parking_utils/repository/payment_handler.dart';
 import 'package:parking_utils/client/watch_tower_client.dart';
+import 'package:parking_utils/repository/watch_tower_server.dart';
 
 /// A class that handles the command line interface for the parking system.
 class ClIDialog {
   /// Instance of WatchTower to manage parking system operations.
-  WatchTower _watchTower = WatchTower();
+  WatchTowerServer _watchTower = WatchTowerServer();
 
   /// Displays the welcome menu and handles user input to navigate to different sub-menus.
   Future<void> welcomeMenu() async {
@@ -328,9 +329,15 @@ class ClIDialog {
     String type = stdin.readLineSync()!;
     print("Enter parking space status: t if occupied, f if not occupied");
     bool isOccupied = stdin.readLineSync() == 't';
+    print("Enter parking space minute rate: ");
+    double minuteRate = double.parse(stdin.readLineSync()!);
 
-    ParkingSpace ps =
-    ParkingSpace(isOccupied: isOccupied, location: location, type: type);
+    ParkingSpace ps = ParkingSpace(
+        isOccupied: isOccupied,
+        location: location,
+        type: type,
+        minuteRate: minuteRate
+    );
     await _watchTower.addSpace(ps);
   }
 
@@ -385,8 +392,10 @@ class ClIDialog {
     print("Enter vehicle type: ");
     String vehicleType = stdin.readLineSync()!;
 
-    ParkingVehicle pv =
-    ParkingVehicle(numberPlate: numberPlate, vehicleType: vehicleType);
+    ParkingVehicle pv = ParkingVehicle(
+        numberPlate: numberPlate,
+        vehicleType: vehicleType
+    );
     await _watchTower.addVehicle(pv);
   }
 
@@ -402,7 +411,12 @@ class ClIDialog {
 
   /// Lists all persons.
   Future<void> _listPersons() async {
+    print('try tio get all persons');
     List<pp.ParkingPerson> persons = await _watchTower.getAllPersons();
+
+    print('All gubbar  all persons');
+    print(persons.length);
+    print("Så många var det i listan");
     for (pp.ParkingPerson person in persons) {
       print('First Name: ${person.getFirstName()}');
       print('Last Name: ${person.getLastName()}');
@@ -424,7 +438,11 @@ class ClIDialog {
     String email = stdin.readLineSync()!;
 
     pp.ParkingPerson person = pp.ParkingPerson(
-        FirstName: firstName, LastName: lastName, email: email, phone: phone);
+        FirstName: firstName,
+        LastName: lastName,
+        email: email,
+        phone: phone
+    );
 
     print("Inserting person");
     await _watchTower.addPerson(person);

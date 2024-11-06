@@ -1,12 +1,14 @@
 import 'abstract_repository.dart';
 import '../parking_item/parking_vehicle.dart';
-
+import "../database/database_helper.dart";
 /// Repository class for managing `ParkingVehicle` objects.
 ///
 /// This class extends `AbstractRepository` and provides methods to add, retrieve, update, and delete parking vehicles.
 class ParkingVehicleRepository extends AbstractRepository<ParkingVehicle> {
-  /// List of parking vehicles.
-  List<ParkingVehicle> _parkingVehicleList = [];
+  // add a constructor that takes a database helper  as a parameter and assigns it to a private field
+  /// Constructor for `ParkingVehicleRepository`
+  ParkingVehicleRepository(this._databaseHelper);
+  final DatabaseHelper _databaseHelper; // Add a private field for DatabaseHelper
 
   /// Static ID counter for parking vehicles.
   static int _parkingVehicleID = 1;
@@ -16,9 +18,9 @@ class ParkingVehicleRepository extends AbstractRepository<ParkingVehicle> {
   /// If the parking vehicle does not have an ID, it assigns a new unique ID.
   /// \param item The parking vehicle to add.
   @override
-  Future<void> add(ParkingVehicle item) async {
-    item.setID(_parkingVehicleID++);
-    _parkingVehicleList.add(item);
+  Future<void> add(ParkingVehicle vehicle) async {
+    vehicle.setID(_parkingVehicleID++);
+    _databaseHelper.addParkingVehicle(vehicle);
   }
 
   /// Retrieves all parking vehicles from the repository.
@@ -26,7 +28,9 @@ class ParkingVehicleRepository extends AbstractRepository<ParkingVehicle> {
   /// \return A list of all parking vehicles.
   @override
   Future<List<ParkingVehicle>> getAll() async {
-    return _parkingVehicleList;
+    List<ParkingVehicle> parkingVehicleList = [];
+    parkingVehicleList = _databaseHelper.getParkingVehicles();
+    return parkingVehicleList;
   }
 
   /// Retrieves a parking vehicle by its ID.
@@ -35,8 +39,7 @@ class ParkingVehicleRepository extends AbstractRepository<ParkingVehicle> {
   /// \return The parking vehicle with the specified ID, or `null` if not found.
   @override
   Future<ParkingVehicle?> getById(int id) async {
-    //return _parkingVehicleList.firstWhere((vehicle) => vehicle.getID() == id,
-      //  orElse: () => null);
+    _databaseHelper.getParkingVehicle(id);
   }
 
   /// Updates an existing parking vehicle in the repository.
@@ -44,11 +47,7 @@ class ParkingVehicleRepository extends AbstractRepository<ParkingVehicle> {
   /// \param item The parking vehicle with updated information.
   @override
   Future<void> update(ParkingVehicle item) async {
-    int index = _parkingVehicleList
-        .indexWhere((vehicle) => vehicle.getID() == item.getID());
-    if (index != -1) {
-      _parkingVehicleList[index] = item;
-    }
+    _databaseHelper.updateParkingVehicle(item);
   }
 
   /// Deletes a parking vehicle from the repository.
@@ -56,7 +55,6 @@ class ParkingVehicleRepository extends AbstractRepository<ParkingVehicle> {
   /// \param item The parking vehicle to delete.
   @override
   Future<void> delete(ParkingVehicle item) async {
-    _parkingVehicleList
-        .removeWhere((vehicle) => vehicle.getID() == item.getID());
-  }
+    _databaseHelper.deleteParkingVehicle(item.getID());
+}
 }

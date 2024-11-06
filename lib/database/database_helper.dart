@@ -1,39 +1,37 @@
-import 'dart:async';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:parking_utils/parking_item/parking_person.dart';
 import 'package:parking_utils/parking_item/parking_vehicle.dart';
+import 'package:sqlite3/sqlite3.dart';
+import 'package:path/path.dart';
+import 'dart:io';
+import 'package:parking_utils/parking_item/parking_person.dart';
 import 'package:parking_utils/parking_item/parking_space.dart';
-import 'package:parking_utils/parking_item/parking_time.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
-  static Database? _database;
+  late final Database _database;
 
   factory DatabaseHelper() {
     return _instance;
   }
 
-  DatabaseHelper._internal();
-
-  Future<Database> get database async {
-    if (_database != null) return _database!;
-    _database = await _initDatabase();
-    return _database!;
+  DatabaseHelper._internal() {
+    _initDatabase();
   }
 
-  Future<Database> _initDatabase() async {
-    String path = join(await getDatabasesPath(), 'parking_database.db');
-    return await openDatabase(
-      path,
-      version: 1,
-      onCreate: _onCreate,
-    );
+  void _initDatabase() {
+    final dbPath = join(Directory.current.path, 'lib', 'database', 'parking_database.db');
+    final dbFile = File(dbPath);
+
+    if (!dbFile.existsSync()) {
+      _database = sqlite3.open(dbPath);
+      _onCreate(_database);
+    } else {
+      _database = sqlite3.open(dbPath);
+    }
   }
 
-  Future<void> _onCreate(Database db, int version) async {
-    await db.execute('''
-      CREATE TABLE ParkingPerson (
+  void _onCreate(Database db) {
+    db.execute('''
+      CREATE TABLE IF NOT EXISTS ParkingPerson (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         firstName TEXT,
         lastName TEXT,
@@ -42,16 +40,16 @@ class DatabaseHelper {
       )
     ''');
 
-    await db.execute('''
-      CREATE TABLE ParkingVehicle (
+    db.execute('''
+      CREATE TABLE IF NOT EXISTS ParkingVehicle (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         numberPlate TEXT,
         vehicleType TEXT
       )
     ''');
 
-    await db.execute('''
-      CREATE TABLE ParkingSpace (
+    db.execute('''
+      CREATE TABLE IF NOT EXISTS ParkingSpace (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         isOccupied INTEGER,
         location TEXT,
@@ -60,8 +58,8 @@ class DatabaseHelper {
       )
     ''');
 
-    await db.execute('''
-      CREATE TABLE ParkingTime (
+    db.execute('''
+      CREATE TABLE IF NOT EXISTS ParkingTime (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         startTime TEXT,
         endTime TEXT,
@@ -77,230 +75,145 @@ class DatabaseHelper {
   }
 
   // Methods for ParkingPerson
-  Future<int> addParkingPerson(ParkingPerson person) async {
-    final db = await database;
-    return await db.insert('ParkingPerson', person.toMap());
-  }
-
-  Future<List<ParkingPerson>> getParkingPersons() async {
-    final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('ParkingPerson');
-    return List.generate(maps.length, (i) {
-      return ParkingPerson.fromMap(maps[i]);
-    });
-  }
-
-  Future<int> updateParkingPerson(ParkingPerson person) async {
-    final db = await database;
-    return await db.update(
-      'ParkingPerson',
-      person.toMap(),
-      where: 'id = ?',
-      whereArgs: [person.getID()],
+  void addParkingPerson(ParkingPerson person) {
+    person.setID(_getNextPersonID());
+    _database.execute(
+      'INSERT INTO ParkingPerson (firstName, lastName, email, phone) VALUES (?, ?, ?, ?)',
+      [person.getFirstName(), person.getLastName(), person.getEmail(), person.getPhone()],
     );
   }
 
-  Future<int> deleteParkingPerson(int id) async {
-    final db = await database;
-    return await db.delete(
-      'ParkingPerson',
-      where: 'id = ?',
-      whereArgs: [id],
+  List<ParkingPerson> getParkingPersons() {
+    List<ParkingPerson> persons = [];
+    for (int i = 1; i < _getCurrentPersonID(); i++) {
+      persons.add(getParkingPerson(i));
+    }
+    return persons;
+  }
+
+  ParkingPerson getParkingPerson(int id) {
+    final List<Map<String, dynamic>> maps = _database.select('SELECT * FROM ParkingPerson WHERE id = ?', [id]);
+    return ParkingPerson.fromMap(maps[0]);
+  }
+
+  void updateParkingPerson(ParkingPerson person) {
+    _database.execute(
+      'UPDATE ParkingPerson SET firstName = ?, lastName = ?, email = ?, phone = ? WHERE id = ?',
+      [person.getFirstName(), person.getLastName(), person.getEmail(), person.getPhone(), person.getID()],
     );
   }
 
-  // Methods for ParkingVehicle
-  Future<int> addParkingVehicle(ParkingVehicle vehicle) async {
-    final db = await database;
-    return await db.insert('ParkingVehicle', vehicle.toMap());
+  void deleteParkingPerson(int id) {
+    _database.execute('DELETE FROM ParkingPerson WHERE id = ?', [id]);
   }
 
-  Future<List<ParkingVehicle>> getParkingVehicles() async {
-    final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('ParkingVehicle');
-    return List.generate(maps.length, (i) {
-      return ParkingVehicle.fromMap(maps[i]);
-    });
+  /// A private method that checks the latest ID in the person table and returns the next ID.
+  int _getNextPersonID() {
+    final List<Map<String, dynamic>> maps = _database.select('SELECT MAX(id) FROM ParkingPerson');
+    return maps[0]['MAX(id)'] + 1;
   }
 
-  Future<int> updateParkingVehicle(ParkingVehicle vehicle) async {
-    final db = await database;
-    return await db.update(
-      'ParkingVehicle',
-      vehicle.toMap(),
-      where: 'id = ?',
-      whereArgs: [vehicle.id],
+  int _getCurrentPersonID() {
+    final List<Map<String, dynamic>> maps = _database.select('SELECT MAX(id) FROM ParkingPerson');
+    return maps[0]['MAX(id)'];
+  }
+
+  // Vehicle methods
+  void addParkingVehicle(ParkingVehicle vehicle) {
+    vehicle.setID(_getNextVehicleID());
+    _database.execute(
+      'INSERT INTO ParkingVehicle (numberPlate, vehicleType) VALUES (?, ?)',
+      [vehicle.getNumberPlate(), vehicle.getVehicleType()],
     );
   }
 
-  Future<int> deleteParkingVehicle(int id) async {
-    final db = await database;
-    return await db.delete(
-      'ParkingVehicle',
-      where: 'id = ?',
-      whereArgs: [id],
+  int _getNextVehicleID() {
+    final List<Map<String, dynamic>> maps = _database.select('SELECT MAX(id) FROM ParkingVehicle');
+    return maps[0]['MAX(id)'] + 1;
+  }
+
+  void updateParkingVehicle(ParkingVehicle vehicle) {
+    _database.execute(
+      'UPDATE ParkingVehicle SET numberPlate = ?, vehicleType = ? WHERE id = ?',
+      [vehicle.getNumberPlate(), vehicle.getVehicleType(), vehicle.getID()],
     );
   }
 
-  // Methods for ParkingSpace
-  Future<int> addParkingSpace(ParkingSpace space) async {
-    final db = await database;
-    return await db.insert('ParkingSpace', space.toMap());
+  void deleteParkingVehicle(int id) {
+    _database.execute('DELETE FROM ParkingVehicle WHERE id = ?', [id]);
   }
 
-  Future<List<ParkingSpace>> getParkingSpaces() async {
-    final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('ParkingSpace');
-    return List.generate(maps.length, (i) {
-      return ParkingSpace.fromMap(maps[i]);
-    });
+  ParkingVehicle getParkingVehicle(int id) {
+    final List<Map<String, dynamic>> maps = _database.select('SELECT * FROM ParkingVehicle WHERE id = ?', [id]);
+    ParkingVehicle vehicle = ParkingVehicle(
+        numberPlate: maps[0]['numberPlate'],
+        vehicleType: maps[0]['vehicleType']
+    );
+    return vehicle;
   }
 
-  Future<int> updateParkingSpace(ParkingSpace space) async {
-    final db = await database;
-    return await db.update(
-      'ParkingSpace',
-      space.toMap(),
-      where: 'id = ?',
-      whereArgs: [space.id],
+  List<ParkingVehicle> getParkingVehicles() {
+    List<ParkingVehicle> vehicles = [];
+    for (int i = 1; i < _getCurrentVehicleID(); i++) {
+      vehicles.add(getParkingVehicle(i));
+    }
+    return vehicles;
+  }
+
+  int _getCurrentVehicleID() {
+    final List<Map<String, dynamic>> maps = _database.select('SELECT MAX(id) FROM ParkingVehicle');
+    return maps[0]['MAX(id)'];
+  }
+  ///Vehicle methods end
+
+  ///ParkingSpace methods
+  void addParkingSpace(ParkingSpace space) {
+    space.setID(_getNextSpaceID());
+    _database.execute(
+      'INSERT INTO ParkingSpace (isOccupied, location, type, minuteRate) VALUES (?, ?, ?, ?)',
+      [space.getIsOccupied() ? 1 : 0, space.getLocation(), space.getType(), space.getMinuteRate()],
     );
   }
 
-  Future<int> deleteParkingSpace(int id) async {
-    final db = await database;
-    return await db.delete(
-      'ParkingSpace',
-      where: 'id = ?',
-      whereArgs: [id],
+  int _getNextSpaceID() {
+    final List<Map<String, dynamic>> maps = _database.select('SELECT MAX(id) FROM ParkingSpace');
+    return maps[0]['MAX(id)'] + 1;
+  }
+
+  void updateParkingSpace(ParkingSpace space) {
+    _database.execute(
+      'UPDATE ParkingSpace SET isOccupied = ?, location = ?, type = ?, minuteRate = ? WHERE id = ?',
+      [space.getIsOccupied() ? 1 : 0, space.getLocation(), space.getType(), space.getMinuteRate(), space.getID()],
     );
   }
 
-  // Methods for ParkingTime
-  Future<int> addParkingTime(ParkingTime time) async {
-    final db = await database;
-    return await db.insert('ParkingTime', time.toMap());
+  void deleteParkingSpace(int id) {
+    _database.execute('DELETE FROM ParkingSpace WHERE id = ?', [id]);
   }
 
-  Future<List<ParkingTime>> getParkingTimes() async {
-    final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('ParkingTime');
-    return List.generate(maps.length, (i) {
-      return ParkingTime.fromMap(maps[i]);
-    });
-  }
-
-  Future<int> updateParkingTime(ParkingTime time) async {
-    final db = await database;
-    return await db.update(
-      'ParkingTime',
-      time.toMap(),
-      where: 'id = ?',
-      whereArgs: [time.id],
+  ParkingSpace getParkingSpace(int id) {
+    final List<Map<String, dynamic>> maps = _database.select('SELECT * FROM ParkingSpace WHERE id = ?', [id]);
+    ParkingSpace space = ParkingSpace(
+        isOccupied: maps[0]['isOccupied'] == 1,
+        location: maps[0]['location'],
+        type: maps[0]['type'],
+        minuteRate: maps[0]['minuteRate']
     );
+    return space;
   }
 
-  Future<int> deleteParkingTime(int id) async {
-    final db = await database;
-    return await db.delete(
-      'ParkingTime',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
-  }
-}
-
-class ParkingVehicle {
-  int id;
-  String numberPlate;
-  String vehicleType;
-
-  ParkingVehicle({required this.id, required this.numberPlate, required this.vehicleType});
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'numberPlate': numberPlate,
-      'vehicleType': vehicleType,
-    };
+  List<ParkingSpace> getParkingSpaces() {
+    List<ParkingSpace> spaces = [];
+    for (int i = 1; i < _getCurrentSpaceID(); i++) {
+      spaces.add(getParkingSpace(i));
+    }
+    return spaces;
   }
 
-  static ParkingVehicle fromMap(Map<String, dynamic> map) {
-    return ParkingVehicle(
-      id: map['id'],
-      numberPlate: map['numberPlate'],
-      vehicleType: map['vehicleType'],
-    );
+  int _getCurrentSpaceID() {
+    final List<Map<String, dynamic>> maps = _database.select('SELECT MAX(id) FROM ParkingSpace');
+    return maps[0]['MAX(id)'];
   }
+///ParkingSpace methods ends
 
-  int get getId => id;
-}
-
-class ParkingSpace {
-  int id;
-  bool isOccupied;
-  String location;
-  String type;
-  double minuteRate;
-
-  ParkingSpace({required this.id, required this.isOccupied, required this.location, required this.type, required this.minuteRate});
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'isOccupied': isOccupied ? 1 : 0,
-      'location': location,
-      'type': type,
-      'minuteRate': minuteRate,
-    };
-  }
-
-  static ParkingSpace fromMap(Map<String, dynamic> map) {
-    return ParkingSpace(
-      id: map['id'],
-      isOccupied: map['isOccupied'] == 1,
-      location: map['location'],
-      type: map['type'],
-      minuteRate: map['minuteRate'],
-    );
-  }
-
-  int get getId => id;
-}
-
-class ParkingTime {
-  int id;
-  String startTime;
-  String endTime;
-  int personID;
-  int spaceID;
-  int vehicleID;
-  bool isActive;
-
-  ParkingTime({required this.id, required this.startTime, required this.endTime, required this.personID, required this.spaceID, required this.vehicleID, required this.isActive});
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'startTime': startTime,
-      'endTime': endTime,
-      'personID': personID,
-      'spaceID': spaceID,
-      'vehicleID': vehicleID,
-      'isActive': isActive ? 1 : 0,
-    };
-  }
-
-  static ParkingTime fromMap(Map<String, dynamic> map) {
-    return ParkingTime(
-      id: map['id'],
-      startTime: map['startTime'],
-      endTime: map['endTime'],
-      personID: map['personID'],
-      spaceID: map['spaceID'],
-      vehicleID: map['vehicleID'],
-      isActive: map['isActive'] == 1,
-    );
-  }
-
-  int get getId => id;
 }

@@ -1,10 +1,17 @@
 import 'package:parking_utils/repository/abstract_repository.dart';
 import 'package:parking_utils/parking_item/parking_person.dart';
+import 'package:parking_utils/database/database_helper.dart';
 
 /// Repository class for managing `ParkingPerson` objects.
 class ParkingPersonRepository extends AbstractRepository<ParkingPerson> {
-  List<ParkingPerson> _parkingPersonList = [];
+
   static int _ParkingPersonID = 1;
+  final DatabaseHelper _databaseHelper; // Add a private field for DatabaseHelper
+
+  /// Constructor for `ParkingPersonRepository`.
+  ///
+  /// \param databaseHelper The instance of `DatabaseHelper` to use.
+  ParkingPersonRepository(this._databaseHelper);
 
   /// Adds a `ParkingPerson` to the repository.
   ///
@@ -16,8 +23,10 @@ class ParkingPersonRepository extends AbstractRepository<ParkingPerson> {
     if (item.getID() == 0) {
       item.setID(_ParkingPersonID);
       _ParkingPersonID++;
+
+
     }
-    _parkingPersonList.add(item);
+   _databaseHelper.addParkingPerson(item);
   }
 
   /// Retrieves all `ParkingPerson` objects from the repository.
@@ -25,7 +34,8 @@ class ParkingPersonRepository extends AbstractRepository<ParkingPerson> {
   /// Returns a list of all `ParkingPerson` objects.
   @override
   Future<List<ParkingPerson>> getAll() async {
-    return _parkingPersonList;
+
+    return _databaseHelper.getParkingPersons();
   }
 
   /// Retrieves a `ParkingPerson` by its ID.
@@ -35,7 +45,8 @@ class ParkingPersonRepository extends AbstractRepository<ParkingPerson> {
   /// Returns the `ParkingPerson` with the specified ID.
   @override
   Future<ParkingPerson?> getById(int id) async {
-    //return _parkingPersonList.firstWhere((person) => person.getID() == id, orElse: () => null);
+    return _databaseHelper.getParkingPerson(id);
+
   }
 
   /// Updates an existing `ParkingPerson` in the repository.
@@ -43,10 +54,7 @@ class ParkingPersonRepository extends AbstractRepository<ParkingPerson> {
   /// [item] - The `ParkingPerson` with updated information.
   @override
   Future<void> update(ParkingPerson item) async {
-    int index = _parkingPersonList.indexWhere((person) => person.getID() == item.getID());
-    if (index != -1) {
-      _parkingPersonList[index] = item;
-    }
+    _databaseHelper.updateParkingPerson(item);
   }
 
   /// Deletes a `ParkingPerson` from the repository.
@@ -54,6 +62,6 @@ class ParkingPersonRepository extends AbstractRepository<ParkingPerson> {
   /// [item] - The `ParkingPerson` to delete.
   @override
   Future<void> delete(ParkingPerson item) async {
-    _parkingPersonList.removeWhere((person) => person.getID() == item.getID());
+    _databaseHelper.deleteParkingPerson(item.getID());
   }
 }
